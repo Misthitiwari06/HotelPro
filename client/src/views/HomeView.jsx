@@ -246,7 +246,7 @@ const HomeView = ({ onBookRoom, onOpenAuthModal }) => {
                     <h4 className="font-heading fw-bold mb-0">{selectedRoomDetails.type}</h4>
                   </div>
                   <div className="text-end">
-                    <span className="price-tag text-primary">${selectedRoomDetails.pricePerNight}</span>
+                    <span className="price-tag text-primary">₹{selectedRoomDetails.pricePerNight?.toLocaleString('en-IN')}</span>
                     <div className="text-muted small">per night</div>
                   </div>
                 </div>

@@ -7,3 +7,4 @@ router.get('/config', getPaymentConfig);
 router.post('/verify-upi', protect, verifyUpiPayment);
 
 module.exports = router;
+

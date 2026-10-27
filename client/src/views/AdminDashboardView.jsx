@@ -107,11 +107,11 @@ const AdminDashboardView = () => {
             <div className="d-flex justify-content-between align-items-center mb-2">
               <span className="text-secondary small fw-semibold text-uppercase">Total Revenue</span>
               <div className="stat-icon-wrapper bg-success-subtle text-success">
-                <i className="bi bi-currency-dollar"></i>
+                <i className="bi bi-cash-stack"></i>
               </div>
             </div>
             <div className="fs-2 fw-bold text-dark font-heading">
-              ${stats?.totalRevenue ? stats.totalRevenue.toLocaleString() : 0}
+              ₹{stats?.totalRevenue ? stats.totalRevenue.toLocaleString('en-IN') : 0}
             </div>
             <div className="text-muted small mt-1">
               <i className="bi bi-arrow-up-right text-success me-1"></i> From {stats?.totalBookings || 0} reservations
@@ -332,7 +332,7 @@ const AdminDashboardView = () => {
                       />
                     </td>
                     <td className="fw-semibold">{room.type}</td>
-                    <td className="fw-bold text-primary">${room.pricePerNight}</td>
+                    <td className="fw-bold text-primary">₹{room.pricePerNight?.toLocaleString('en-IN')}</td>
                     <td>{room.capacity} Guests</td>
                     <td>Floor {room.floor}</td>
                     <td>{getStatusBadge(room.status)}</td>
@@ -411,7 +411,7 @@ const AdminDashboardView = () => {
                     </td>
                     <td>
                       <span className="fw-bold text-success fs-6">
-                        ${guest.totalSpent ? guest.totalSpent.toLocaleString() : 0}
+                        ₹{guest.totalSpent ? guest.totalSpent.toLocaleString('en-IN') : 0}
                       </span>
                     </td>
                     <td className="text-muted small">

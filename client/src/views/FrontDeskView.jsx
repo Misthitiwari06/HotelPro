@@ -208,7 +208,7 @@ const FrontDeskView = ({ onOpenInvoice }) => {
                           <div className="text-muted small">{b.totalNights} Nights • {b.totalGuests} Guests</div>
                         </td>
                         <td>
-                          <div className="fw-bold text-primary">${b.totalPrice}</div>
+                          <div className="fw-bold text-primary">₹{b.totalPrice?.toLocaleString('en-IN')}</div>
                           <span className="badge bg-success-subtle text-success small">{b.paymentStatus}</span>
                         </td>
                         <td>{getStatusBadge(b.bookingStatus)}</td>
@@ -275,7 +275,7 @@ const FrontDeskView = ({ onOpenInvoice }) => {
 
                 <div className="card-body p-3">
                   <h6 className="fw-bold text-dark mb-1">{room.type}</h6>
-                  <div className="text-muted small mb-3">${room.pricePerNight} / night • {room.capacity} Guests</div>
+                  <div className="text-muted small mb-3">₹{room.pricePerNight?.toLocaleString('en-IN')} / night • {room.capacity} Guests</div>
 
                   <label className="form-label small text-secondary fw-semibold mb-1">Room Status:</label>
                   <select

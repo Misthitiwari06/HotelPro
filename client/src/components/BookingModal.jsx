@@ -81,10 +81,9 @@ const BookingModal = ({ room, show, onClose, onBookingSuccess, onOpenAuthModal }
   const roomSubtotal = nights * room.pricePerNight;
   const taxAmount = Math.round(roomSubtotal * 0.12);
   const totalPrice = roomSubtotal + taxAmount;
-  const amountInInr = Math.round(totalPrice * (upiConfig.exchangeRateUsdToInr || 83));
 
-  // Dynamic valid UPI URL standard
-  const upiUri = `upi://pay?pa=${encodeURIComponent(upiConfig.upiId)}&pn=${encodeURIComponent(upiConfig.payeeName)}&am=${amountInInr}&cu=INR&tn=${encodeURIComponent(`HotelPro Booking Room ${room.roomNumber}`)}`;
+  // Dynamic valid UPI URL standard (direct in Indian Rupees)
+  const upiUri = `upi://pay?pa=${encodeURIComponent(upiConfig.upiId)}&pn=${encodeURIComponent(upiConfig.payeeName)}&am=${totalPrice}&cu=INR&tn=${encodeURIComponent(`HotelPro Booking Room ${room.roomNumber}`)}`;
 
   const handleCheckInChange = (e) => {
     const newCheckIn = e.target.value;
@@ -414,7 +413,7 @@ const BookingModal = ({ room, show, onClose, onBookingSuccess, onOpenAuthModal }
                               </div>
                               <div className="d-flex justify-content-between">
                                 <span className="text-secondary">Total Amount:</span>
-                                <strong className="text-primary">${totalPrice} (₹{amountInInr})</strong>
+                                <strong className="text-primary">₹{totalPrice.toLocaleString('en-IN')}</strong>
                               </div>
                             </div>
 
@@ -424,7 +423,7 @@ const BookingModal = ({ room, show, onClose, onBookingSuccess, onOpenAuthModal }
                               </strong>
                               <ol className="ps-3 mb-0 text-muted" style={{ fontSize: '0.72rem', lineHeight: '1.4' }}>
                                 <li>Scan this QR code using your UPI app.</li>
-                                <li>Complete the payment of <strong>${totalPrice}</strong> (₹{amountInInr}).</li>
+                                <li>Complete the payment of <strong>₹{totalPrice.toLocaleString('en-IN')}</strong>.</li>
                                 <li>Enter the <strong>12-digit UPI UTR</strong> from your receipt below.</li>
                                 <li>Click <strong>Verify Payment</strong> to validate and confirm.</li>
                               </ol>
@@ -534,7 +533,7 @@ const BookingModal = ({ room, show, onClose, onBookingSuccess, onOpenAuthModal }
                       <div className="border-top pt-2">
                         <div className="d-flex justify-content-between small text-secondary mb-1">
                           <span>Rate per Night:</span>
-                          <span className="fw-semibold text-dark">${room.pricePerNight}</span>
+                          <span className="fw-semibold text-dark">₹{room.pricePerNight?.toLocaleString('en-IN')}</span>
                         </div>
                         <div className="d-flex justify-content-between small text-secondary mb-1">
                           <span>Total Duration:</span>
@@ -542,11 +541,11 @@ const BookingModal = ({ room, show, onClose, onBookingSuccess, onOpenAuthModal }
                         </div>
                         <div className="d-flex justify-content-between small text-secondary mb-1">
                           <span>Room Subtotal:</span>
-                          <span className="fw-semibold text-dark">${roomSubtotal}</span>
+                          <span className="fw-semibold text-dark">₹{roomSubtotal.toLocaleString('en-IN')}</span>
                         </div>
                         <div className="d-flex justify-content-between small text-secondary mb-2">
                           <span>Hospitality Tax & Fees (12%):</span>
-                          <span className="fw-semibold text-dark">${taxAmount}</span>
+                          <span className="fw-semibold text-dark">₹{taxAmount.toLocaleString('en-IN')}</span>
                         </div>
                       </div>
                     </div>
@@ -554,7 +553,7 @@ const BookingModal = ({ room, show, onClose, onBookingSuccess, onOpenAuthModal }
                     <div className="border-top pt-3">
                       <div className="d-flex justify-content-between align-items-center mb-3">
                         <span className="fw-bold text-dark fs-6">Total Amount:</span>
-                        <span className="price-tag text-primary fs-3">${totalPrice}</span>
+                        <span className="price-tag text-primary fs-3">₹{totalPrice.toLocaleString('en-IN')}</span>
                       </div>
 
                       {!isAuthenticated ? (
@@ -579,7 +578,7 @@ const BookingModal = ({ room, show, onClose, onBookingSuccess, onOpenAuthModal }
                           ) : paymentMethod === 'upi' && !isUpiVerified ? (
                             <span><i className="bi bi-qr-code me-1"></i> Verify UPI Payment to Book</span>
                           ) : (
-                            <span><i className="bi bi-shield-lock-fill me-1"></i> Confirm & Pay ${totalPrice}</span>
+                            <span><i className="bi bi-shield-lock-fill me-1"></i> Confirm & Pay ₹{totalPrice.toLocaleString('en-IN')}</span>
                           )}
                         </button>
                       )}

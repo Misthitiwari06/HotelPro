@@ -145,7 +145,7 @@ const GuestBookingsView = ({ onOpenInvoice, onExploreRooms }) => {
                   {/* Pricing & Status */}
                   <div className="col-sm-6 col-lg-2">
                     <div className="small text-secondary mb-1">Total Paid:</div>
-                    <div className="price-tag text-primary fs-4">${booking.totalPrice}</div>
+                    <div className="price-tag text-primary fs-4">₹{booking.totalPrice?.toLocaleString('en-IN')}</div>
                     <div className="mt-1">{getStatusBadge(booking.bookingStatus)}</div>
                   </div>
 

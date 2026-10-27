@@ -19,7 +19,7 @@ const RoomManageModal = ({ show, onClose, editingRoom, onSaveSuccess }) => {
     if (editingRoom) {
       setRoomNumber(editingRoom.roomNumber || '');
       setType(editingRoom.type || 'Deluxe Room');
-      setPricePerNight(editingRoom.pricePerNight || 150);
+      setPricePerNight(editingRoom.pricePerNight || 3999);
       setCapacity(editingRoom.capacity || 2);
       setBedType(editingRoom.bedType || 'King Bed');
       setFloor(editingRoom.floor || 1);
@@ -30,7 +30,7 @@ const RoomManageModal = ({ show, onClose, editingRoom, onSaveSuccess }) => {
     } else {
       setRoomNumber('');
       setType('Deluxe Room');
-      setPricePerNight(150);
+      setPricePerNight(3999);
       setCapacity(2);
       setBedType('King Bed');
       setFloor(1);
@@ -125,7 +125,7 @@ const RoomManageModal = ({ show, onClose, editingRoom, onSaveSuccess }) => {
                 </div>
 
                 <div className="col-md-4">
-                  <label className="form-label small fw-semibold text-secondary">Nightly Price ($ USD)</label>
+                  <label className="form-label small fw-semibold text-secondary">Nightly Price (₹ INR)</label>
                   <input
                     type="number"
                     className="form-control"

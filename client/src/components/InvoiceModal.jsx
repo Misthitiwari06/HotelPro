@@ -87,19 +87,19 @@ const InvoiceModal = ({ booking, show, onClose }) => {
                       <div className="fw-bold">{booking.room?.type || 'Hotel Room Stay'}</div>
                       <div className="text-muted small">Room #{booking.room?.roomNumber} (Includes complimentary breakfast & Wi-Fi)</div>
                     </td>
-                    <td className="text-center">${booking.roomRate || booking.room?.pricePerNight}</td>
+                    <td className="text-center">₹{(booking.roomRate || booking.room?.pricePerNight || 0).toLocaleString('en-IN')}</td>
                     <td className="text-center">{booking.totalNights}</td>
                     <td className="text-end fw-semibold">
-                      ${(booking.roomRate || booking.room?.pricePerNight || 0) * (booking.totalNights || 1)}
+                      ₹{((booking.roomRate || booking.room?.pricePerNight || 0) * (booking.totalNights || 1)).toLocaleString('en-IN')}
                     </td>
                   </tr>
                   <tr>
                     <td colSpan="3" className="text-end text-muted small">State Hospitality & Occupancy Tax (12%)</td>
-                    <td className="text-end fw-semibold">${booking.taxAmount || Math.round(booking.totalPrice * 0.12)}</td>
+                    <td className="text-end fw-semibold">₹{(booking.taxAmount || Math.round(booking.totalPrice * 0.12)).toLocaleString('en-IN')}</td>
                   </tr>
                   <tr className="table-light">
                     <td colSpan="3" className="text-end fw-bold fs-5">Total Paid</td>
-                    <td className="text-end fw-bold fs-5 text-primary">${booking.totalPrice}</td>
+                    <td className="text-end fw-bold fs-5 text-primary">₹{booking.totalPrice?.toLocaleString('en-IN')}</td>
                   </tr>
                 </tbody>
               </table>

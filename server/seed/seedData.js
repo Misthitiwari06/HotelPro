@@ -69,7 +69,7 @@ const seedDB = async () => {
       {
         roomNumber: '101',
         type: 'Single Room',
-        pricePerNight: 95,
+        pricePerNight: 2499,
         capacity: 1,
         bedType: 'Single Bed',
         floor: 1,
@@ -85,7 +85,7 @@ const seedDB = async () => {
       {
         roomNumber: '102',
         type: 'Single Room',
-        pricePerNight: 105,
+        pricePerNight: 2799,
         capacity: 1,
         bedType: 'Single Bed',
         floor: 1,
@@ -100,7 +100,7 @@ const seedDB = async () => {
       {
         roomNumber: '201',
         type: 'Double Room',
-        pricePerNight: 160,
+        pricePerNight: 3999,
         capacity: 2,
         bedType: 'Queen Bed',
         floor: 2,
@@ -116,7 +116,7 @@ const seedDB = async () => {
       {
         roomNumber: '202',
         type: 'Double Room',
-        pricePerNight: 175,
+        pricePerNight: 4499,
         capacity: 2,
         bedType: 'King Bed',
         floor: 2,
@@ -131,7 +131,7 @@ const seedDB = async () => {
       {
         roomNumber: '301',
         type: 'Deluxe Room',
-        pricePerNight: 240,
+        pricePerNight: 6999,
         capacity: 3,
         bedType: 'King Bed + Sofa Bed',
         floor: 3,
@@ -147,7 +147,7 @@ const seedDB = async () => {
       {
         roomNumber: '302',
         type: 'Deluxe Room',
-        pricePerNight: 255,
+        pricePerNight: 7499,
         capacity: 3,
         bedType: 'King Bed',
         floor: 3,
@@ -162,7 +162,7 @@ const seedDB = async () => {
       {
         roomNumber: '401',
         type: 'Executive Suite',
-        pricePerNight: 420,
+        pricePerNight: 12999,
         capacity: 4,
         bedType: 'Master King + Twin Sleeper',
         floor: 4,
@@ -178,7 +178,7 @@ const seedDB = async () => {
       {
         roomNumber: '501',
         type: 'Presidential Suite',
-        pricePerNight: 850,
+        pricePerNight: 24999,
         capacity: 4,
         bedType: 'Royal Master Bed',
         floor: 5,
@@ -277,6 +277,7 @@ const seedDB = async () => {
         booking: booking1._id,
         guest: guestUser._id,
         amount: booking1.totalPrice,
+        currency: 'INR',
         paymentMethod: 'card',
         transactionId: 'TXN-982144-CARD',
         status: 'success',
@@ -285,6 +286,7 @@ const seedDB = async () => {
         booking: booking2._id,
         guest: sarahUser._id,
         amount: booking2.totalPrice,
+        currency: 'INR',
         paymentMethod: 'upi',
         transactionId: 'TXN-871233-UPI',
         status: 'success',
@@ -293,6 +295,7 @@ const seedDB = async () => {
         booking: booking3._id,
         guest: guestUser._id,
         amount: booking3.totalPrice,
+        currency: 'INR',
         paymentMethod: 'card',
         transactionId: 'TXN-652011-CARD',
         status: 'success',

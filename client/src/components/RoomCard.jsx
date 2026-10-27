@@ -77,7 +77,7 @@ const RoomCard = ({ room, onBookNow, onViewDetails }) => {
         {/* Price & CTA */}
         <div className="mt-auto pt-3 border-top d-flex align-items-center justify-content-between">
           <div>
-            <div className="price-tag">${room.pricePerNight}</div>
+            <div className="price-tag">₹{room.pricePerNight?.toLocaleString('en-IN')}</div>
             <div className="text-muted small" style={{ fontSize: '0.75rem' }}>per night (excl. tax)</div>
           </div>
 
