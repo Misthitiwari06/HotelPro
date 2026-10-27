@@ -111,3 +111,4 @@ npm run dev             # Runs on http://localhost:3000
 ### Executive Dashboard & Guests
 - `GET /api/dashboard/stats` — Live KPI metrics: revenue, occupancy, room status
 - `GET /api/guests` — Registered guest registry with stay count and total spend
+

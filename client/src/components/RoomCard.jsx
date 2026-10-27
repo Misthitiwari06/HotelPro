@@ -104,3 +104,4 @@ const RoomCard = ({ room, onBookNow, onViewDetails }) => {
 };
 
 export default RoomCard;
+

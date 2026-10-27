@@ -78,6 +78,35 @@ exports.createBooking = async (req, res) => {
 
     const bookingNumber = generateBookingNumber();
 
+    // Pricing and payment verification
+    let finalTxnId = `TXN-${Date.now()}-${Math.floor(100 + Math.random() * 900)}`;
+    let paymentNotes = `Payment for Booking #${bookingNumber}`;
+    let isPaymentPaid = 'paid';
+
+    if (paymentMethod === 'upi') {
+      const { upiUtr, upiApp } = req.body;
+      if (!upiUtr || !/^\d{12}$/.test(upiUtr.trim())) {
+        return res.status(400).json({
+          success: false,
+          message: 'Payment verification failed: Please provide a valid, verified 12-digit UPI Reference Number (UTR) from your UPI payment app.',
+        });
+      }
+
+      const existingTxn = await Payment.findOne({ transactionId: upiUtr.trim() });
+      if (existingTxn) {
+        return res.status(400).json({
+          success: false,
+          message: 'Payment verification failed: This UPI Reference Number (UTR) has already been processed for another reservation.',
+        });
+      }
+
+      finalTxnId = upiUtr.trim();
+      paymentNotes = `Verified UPI Payment via ${upiApp || 'UPI App'} (UTR: ${upiUtr.trim()})`;
+    } else if (paymentMethod === 'cash') {
+      isPaymentPaid = 'pending';
+      paymentNotes = 'Pay at hotel front desk upon arrival';
+    }
+
     const booking = await Booking.create({
       bookingNumber,
       guest: req.user.id,
@@ -93,19 +122,19 @@ exports.createBooking = async (req, res) => {
       taxAmount,
       totalPrice,
       bookingStatus: 'confirmed',
-      paymentStatus: 'paid',
+      paymentStatus: isPaymentPaid,
       specialRequests: specialRequests || 'None',
     });
 
-    // Create simulated payment entry
+    // Create payment entry
     const payment = await Payment.create({
       booking: booking._id,
       guest: req.user.id,
       amount: totalPrice,
       paymentMethod: paymentMethod || 'card',
-      transactionId: `TXN-${Date.now()}-${Math.floor(100 + Math.random() * 900)}`,
-      status: 'success',
-      notes: `Payment for Booking #${bookingNumber}`,
+      transactionId: finalTxnId,
+      status: isPaymentPaid === 'paid' ? 'success' : 'pending',
+      notes: paymentNotes,
     });
 
     // If checkIn is today, update room status to occupied
@@ -313,3 +342,4 @@ exports.cancelBooking = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+

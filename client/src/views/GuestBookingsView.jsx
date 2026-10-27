@@ -183,3 +183,4 @@ const GuestBookingsView = ({ onOpenInvoice, onExploreRooms }) => {
 };
 
 export default GuestBookingsView;
+

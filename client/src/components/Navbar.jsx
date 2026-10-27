@@ -151,3 +151,4 @@ const Navbar = ({ activeView, setActiveView, onOpenAuthModal }) => {
 };
 
 export default Navbar;
+

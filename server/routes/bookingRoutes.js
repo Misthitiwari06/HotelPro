@@ -18,3 +18,4 @@ router.put('/:id/status', protect, authorize('admin', 'staff'), updateBookingSta
 router.put('/:id/cancel', protect, cancelBooking);
 
 module.exports = router;
+

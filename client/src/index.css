@@ -45,20 +45,61 @@ h1, h2, h3, .font-heading {
 
 /* Hero Section */
 .hero-wrapper {
-  background: linear-gradient(rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.85)),
+  background: linear-gradient(rgba(15, 23, 42, 0.78), rgba(15, 23, 42, 0.88)),
     url('https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
   color: #ffffff;
-  padding: 5rem 0 7rem;
+  padding: 5.5rem 0 5rem;
   border-radius: 0 0 2rem 2rem;
+  position: relative;
 }
 
+/* Date selection box moved downward with clean alignment and spacing */
 .search-box-card {
-  margin-top: -3.5rem;
+  margin-top: 2rem;
+  margin-bottom: -4.5rem;
+  position: relative;
+  z-index: 10;
   background: #ffffff;
   border-radius: 1.25rem;
-  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.12);
-  border: 1px solid rgba(226, 232, 240, 0.8);
-  padding: 1.75rem;
+  box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.2);
+  border: 1px solid rgba(226, 232, 240, 0.95);
+  padding: 2rem 2.25rem;
+}
+
+.showcase-container {
+  padding-top: 6rem;
+}
+
+@media (max-width: 991px) {
+  .search-box-card {
+    margin-top: 1.5rem;
+    margin-bottom: -3rem;
+    padding: 1.5rem;
+  }
+  .showcase-container {
+    padding-top: 4.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-wrapper {
+    padding: 3.5rem 0 3.5rem;
+  }
+  .search-box-card {
+    margin-top: 1.5rem;
+    margin-bottom: 0;
+    padding: 1.25rem;
+  }
+  .showcase-container {
+    padding-top: 2.5rem;
+  }
+}
+
+/* QR Code Payment Box */
+.payment-qr-box {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.85rem;
 }
 
 /* Room Cards */
@@ -213,3 +254,4 @@ h1, h2, h3, .font-heading {
   border-radius: 1rem;
   border: 1px solid #e2e8f0;
 }
+

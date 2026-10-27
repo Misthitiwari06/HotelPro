@@ -107,7 +107,17 @@ const InvoiceModal = ({ booking, show, onClose }) => {
 
             {/* Special notes & footer */}
             <div className="border-top pt-3 text-muted small">
-              <p className="mb-1"><strong>Special Requests:</strong> {booking.specialRequests || 'None provided'}</p>
+              <div className="row g-2 mb-2">
+                <div className="col-sm-6">
+                  <strong>Payment Verification:</strong>{' '}
+                  <span className="badge bg-light text-dark border">
+                    {booking.paymentStatus === 'paid' ? 'Verified & Settled' : 'Pending Settlement'}
+                  </span>
+                </div>
+                <div className="col-sm-6 text-sm-end">
+                  <strong>Special Requests:</strong> {booking.specialRequests || 'None provided'}
+                </div>
+              </div>
               <p className="mb-0">
                 <em>Thank you for choosing HotelPro. Check-in is at 3:00 PM; Check-out is at 11:00 AM. For inquiries, present this invoice receipt at the reception desk.</em>
               </p>
@@ -130,3 +140,4 @@ const InvoiceModal = ({ booking, show, onClose }) => {
 };
 
 export default InvoiceModal;
+

@@ -1,10 +1,34 @@
 import React, { useState } from 'react';
 
 const HeroBanner = ({ onSearch, filters, setFilters }) => {
-  const [checkIn, setCheckIn] = useState('');
-  const [checkOut, setCheckOut] = useState('');
-  const [roomType, setRoomType] = useState('All');
-  const [guests, setGuests] = useState('1');
+  const todayStr = new Date().toISOString().split('T')[0];
+
+  const getTomorrow = () => {
+    const d = new Date();
+    d.setDate(d.getDate() + 1);
+    return d.toISOString().split('T')[0];
+  };
+
+  const getDayAfterTomorrow = () => {
+    const d = new Date();
+    d.setDate(d.getDate() + 3);
+    return d.toISOString().split('T')[0];
+  };
+
+  const [checkIn, setCheckIn] = useState(filters?.checkInDate || getTomorrow());
+  const [checkOut, setCheckOut] = useState(filters?.checkOutDate || getDayAfterTomorrow());
+  const [roomType, setRoomType] = useState(filters?.type || 'All');
+  const [guests, setGuests] = useState(filters?.capacity || '1');
+
+  const handleCheckInChange = (e) => {
+    const selectedCheckIn = e.target.value;
+    setCheckIn(selectedCheckIn);
+    if (selectedCheckIn && checkOut && new Date(selectedCheckIn) >= new Date(checkOut)) {
+      const nextDay = new Date(selectedCheckIn);
+      nextDay.setDate(nextDay.getDate() + 1);
+      setCheckOut(nextDay.toISOString().split('T')[0]);
+    }
+  };
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
@@ -23,53 +47,61 @@ const HeroBanner = ({ onSearch, filters, setFilters }) => {
   return (
     <div className="hero-wrapper text-center">
       <div className="container py-4">
+        {/* Main Hero Header */}
         <div className="row justify-content-center">
-          <div className="col-lg-9">
-            <span className="badge bg-warning text-dark px-3 py-2 rounded-pill fw-semibold text-uppercase mb-3">
+          <div className="col-lg-9 mb-2">
+            <span className="badge bg-warning text-dark px-3 py-2 rounded-pill fw-semibold text-uppercase mb-3 shadow-xs">
               ★ Five-Star Luxury Experience ★
             </span>
             <h1 className="display-4 fw-bold mb-3 text-white">
               Where Precision Meets Hospitality
             </h1>
-            <p className="lead text-light text-opacity-75 mb-5 mx-auto" style={{ maxWidth: '680px' }}>
+            <p className="lead text-light text-opacity-75 mx-auto mb-4" style={{ maxWidth: '680px' }}>
               Seamless reservation management, refined accommodations, and instant check-ins. Designed for guests and hoteliers alike.
             </p>
           </div>
         </div>
 
-        {/* Floating Search Availability Box */}
+        {/* Check-In and Check-Out Date Selection Box - Positioned downward with ample spacing */}
         <div className="row justify-content-center">
           <div className="col-lg-11">
             <div className="search-box-card text-dark text-start">
               <form onSubmit={handleSearchSubmit}>
                 <div className="row g-3 align-items-end">
+                  {/* Check-In Date */}
                   <div className="col-md-3">
-                    <label className="form-label small fw-bold text-secondary mb-1">
-                      <i className="bi bi-calendar-event me-1 text-primary"></i> Check-in Date
+                    <label className="form-label small fw-bold text-secondary mb-1 d-flex align-items-center">
+                      <i className="bi bi-calendar-event me-1 text-primary fs-6"></i> Check-in Date
                     </label>
                     <input
                       type="date"
                       className="form-control form-control-lg fs-6"
+                      min={todayStr}
                       value={checkIn}
-                      onChange={(e) => setCheckIn(e.target.value)}
+                      onChange={handleCheckInChange}
+                      required
                     />
                   </div>
 
+                  {/* Check-Out Date */}
                   <div className="col-md-3">
-                    <label className="form-label small fw-bold text-secondary mb-1">
-                      <i className="bi bi-calendar-check me-1 text-primary"></i> Check-out Date
+                    <label className="form-label small fw-bold text-secondary mb-1 d-flex align-items-center">
+                      <i className="bi bi-calendar-check me-1 text-primary fs-6"></i> Check-out Date
                     </label>
                     <input
                       type="date"
                       className="form-control form-control-lg fs-6"
+                      min={checkIn || todayStr}
                       value={checkOut}
                       onChange={(e) => setCheckOut(e.target.value)}
+                      required
                     />
                   </div>
 
+                  {/* Room Category */}
                   <div className="col-md-3">
-                    <label className="form-label small fw-bold text-secondary mb-1">
-                      <i className="bi bi-door-closed me-1 text-primary"></i> Room Category
+                    <label className="form-label small fw-bold text-secondary mb-1 d-flex align-items-center">
+                      <i className="bi bi-door-closed me-1 text-primary fs-6"></i> Room Category
                     </label>
                     <select
                       className="form-select form-select-lg fs-6"
@@ -85,9 +117,10 @@ const HeroBanner = ({ onSearch, filters, setFilters }) => {
                     </select>
                   </div>
 
+                  {/* Guests */}
                   <div className="col-md-2">
-                    <label className="form-label small fw-bold text-secondary mb-1">
-                      <i className="bi bi-people me-1 text-primary"></i> Guests
+                    <label className="form-label small fw-bold text-secondary mb-1 d-flex align-items-center">
+                      <i className="bi bi-people me-1 text-primary fs-6"></i> Guests
                     </label>
                     <select
                       className="form-select form-select-lg fs-6"
@@ -101,11 +134,12 @@ const HeroBanner = ({ onSearch, filters, setFilters }) => {
                     </select>
                   </div>
 
+                  {/* Submit Button */}
                   <div className="col-md-1">
                     <button
                       type="submit"
                       className="btn btn-warning btn-lg w-100 fw-bold shadow-sm d-flex align-items-center justify-content-center"
-                      title="Search Rooms"
+                      title="Search Available Rooms"
                     >
                       <i className="bi bi-search"></i>
                     </button>

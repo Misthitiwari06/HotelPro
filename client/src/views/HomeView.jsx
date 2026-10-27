@@ -50,7 +50,7 @@ const HomeView = ({ onBookRoom, onOpenAuthModal }) => {
       <HeroBanner filters={filters} setFilters={setFilters} onSearch={() => fetchRooms()} />
 
       {/* Main Room Showcase Container */}
-      <div className="container py-5">
+      <div className="container showcase-container py-5">
         <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
           <div>
             <h2 className="font-heading fw-bold text-dark mb-1">Our Accommodations</h2>
@@ -352,3 +352,4 @@ const HomeView = ({ onBookRoom, onOpenAuthModal }) => {
 };
 
 export default HomeView;
+

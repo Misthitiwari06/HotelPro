@@ -37,6 +37,7 @@ app.use('/api/rooms', require('./routes/roomRoutes'));
 app.use('/api/bookings', require('./routes/bookingRoutes'));
 app.use('/api/guests', require('./routes/guestRoutes'));
 app.use('/api/dashboard', require('./routes/dashboardRoutes'));
+app.use('/api/payments', require('./routes/paymentRoutes'));
 
 // Serve static frontend in production or if build dist exists
 const clientDistPath = path.join(__dirname, '../client/dist');

@@ -18,3 +18,4 @@ router.put('/:id', protect, authorize('admin', 'staff'), updateRoom);
 router.delete('/:id', protect, authorize('admin'), deleteRoom);
 
 module.exports = router;
+

@@ -223,3 +223,4 @@ const AuthModal = ({ show, onClose }) => {
 };
 
 export default AuthModal;
+

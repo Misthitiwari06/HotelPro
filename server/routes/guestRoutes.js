@@ -7,3 +7,4 @@ router.get('/', protect, authorize('admin', 'staff'), getGuests);
 router.get('/:id', protect, authorize('admin', 'staff'), getGuestById);
 
 module.exports = router;
+

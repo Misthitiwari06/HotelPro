@@ -299,3 +299,4 @@ const FrontDeskView = ({ onOpenInvoice }) => {
 };
 
 export default FrontDeskView;
+
