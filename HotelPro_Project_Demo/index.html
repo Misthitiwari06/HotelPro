@@ -1,0 +1,1147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HotelPro — Interactive Live Demo Showcase</title>
+  <!-- Bootstrap 5 & Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+
+  <style>
+    :root {
+      --hp-primary: #0f172a;
+      --hp-primary-light: #1e293b;
+      --hp-gold: #d97706;
+      --hp-font-heading: 'Playfair Display', Georgia, serif;
+      --hp-font-body: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    }
+    body {
+      font-family: var(--hp-font-body);
+      background-color: #f8fafc;
+      color: #334155;
+      margin: 0;
+    }
+    h1, h2, h3, h4, h5, .font-heading {
+      font-family: var(--hp-font-heading);
+    }
+    .brand-badge {
+      background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+      color: #fff;
+      font-size: 0.65rem;
+      letter-spacing: 1px;
+      padding: 3px 8px;
+      border-radius: 4px;
+      text-transform: uppercase;
+    }
+    .hero-wrapper {
+      background: linear-gradient(rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.9)),
+        url('https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
+      color: #ffffff;
+      padding: 5rem 0 4.5rem;
+      border-radius: 0 0 2rem 2rem;
+    }
+    .room-card {
+      border: 1px solid #e2e8f0;
+      border-radius: 1rem;
+      overflow: hidden;
+      background: #ffffff;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .room-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 30px -10px rgba(15, 23, 42, 0.12);
+    }
+    .room-img-container {
+      height: 220px;
+      position: relative;
+      overflow: hidden;
+    }
+    .room-img-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s ease;
+      cursor: pointer;
+    }
+    .room-card:hover .room-img-container img {
+      transform: scale(1.05);
+    }
+    .price-tag {
+      font-family: var(--hp-font-heading);
+      font-size: 1.55rem;
+      font-weight: 700;
+      color: #0f172a;
+    }
+    .status-pill {
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.35rem 0.75rem;
+      border-radius: 50px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .status-available { background-color: #dcfce7; color: #15803d; }
+    .status-occupied { background-color: #fee2e2; color: #b91c1c; }
+    .status-cleaning { background-color: #e0f2fe; color: #0369a1; }
+    .status-maintenance { background-color: #fef3c7; color: #b45309; }
+    .status-confirmed { background-color: #dbeafe; color: #1d4ed8; }
+
+    @media print {
+      body * { visibility: hidden; }
+      #printable-invoice, #printable-invoice *, #printable-room-qr, #printable-room-qr * {
+        visibility: visible;
+      }
+      #printable-invoice, #printable-room-qr {
+        position: absolute; left: 0; top: 0; width: 100%;
+      }
+      .no-print { display: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Demo Top Bar -->
+  <div className="bg-primary text-white py-1 px-3 small d-flex justify-content-between align-items-center" style="background-color: #1e293b !important;">
+    <div class="d-flex align-items-center gap-2">
+      <span class="badge bg-warning text-dark fw-bold">PROJECT DEMO</span>
+      <span class="d-none d-sm-inline">HotelPro MERN Hospitality Suite • Live Showcase Mode</span>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+      <span class="text-white-50">Active Role:</span>
+      <select id="roleSelector" class="form-select form-select-sm py-0 ps-2 pe-4 bg-dark text-white border-secondary" style="font-size: 0.78rem;" onchange="handleRoleChange(this.value)">
+        <option value="guest">👤 Guest (Michael Sterling)</option>
+        <option value="staff">💼 Front Desk (Elena Rostova)</option>
+        <option value="admin" selected>👑 General Manager (Alexander)</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark sticky-top shadow-sm" style="background-color: #0f172a;">
+    <div class="container">
+      <a class="navbar-brand d-flex align-items-center gap-2" href="#" onclick="switchView('home'); return false;">
+        <span class="bg-primary text-white p-2 rounded-3 d-inline-flex align-items-center justify-content-center" style="width: 38px; height: 38px;">
+          <i class="bi bi-buildings-fill fs-5"></i>
+        </span>
+        <div class="d-flex flex-column">
+          <span class="fs-4 fw-bold lh-1 font-heading">Hotel<span class="text-warning">Pro</span></span>
+          <span class="brand-badge mt-1 align-self-start">Hospitality Cloud</span>
+        </div>
+      </a>
+
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#demoNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="demoNav">
+        <ul class="navbar-nav me-auto ms-lg-4 mb-2 mb-lg-0 gap-1">
+          <li class="nav-item">
+            <button id="nav-home" class="nav-link btn btn-link text-decoration-none px-3 py-2 rounded-2 text-white bg-secondary bg-opacity-25 fw-semibold" onclick="switchView('home')">
+              <i class="bi bi-door-open me-1"></i> Rooms & Suites
+            </button>
+          </li>
+          <li class="nav-item">
+            <button id="nav-bookings" class="nav-link btn btn-link text-decoration-none px-3 py-2 rounded-2 text-light text-opacity-75" onclick="switchView('bookings')">
+              <i class="bi bi-calendar-check me-1"></i> My Bookings
+            </button>
+          </li>
+          <li class="nav-item">
+            <button id="nav-frontdesk" class="nav-link btn btn-link text-decoration-none px-3 py-2 rounded-2 text-light text-opacity-75" onclick="switchView('frontdesk')">
+              <i class="bi bi-person-badge me-1"></i> Front Desk Ops
+            </button>
+          </li>
+          <li class="nav-item">
+            <button id="nav-admin" class="nav-link btn btn-link text-decoration-none px-3 py-2 rounded-2 text-light text-opacity-75" onclick="switchView('admin')">
+              <i class="bi bi-speedometer2 me-1"></i> Executive Dashboard
+            </button>
+          </li>
+        </ul>
+
+        <div class="d-flex align-items-center gap-2">
+          <span id="userBadge" class="badge bg-danger px-3 py-2 rounded-pill">
+            <i class="bi bi-shield-check me-1"></i> Admin: Alexander Wright
+          </span>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- VIEW 1: HOME (ROOMS SHOWCASE) -->
+  <div id="view-home">
+    <div class="hero-wrapper text-center">
+      <div class="container py-4">
+        <span class="badge bg-warning text-dark px-3 py-2 rounded-pill fw-bold text-uppercase mb-3 shadow-xs">
+          ★ Five-Star Luxury Hospitality Suite ★
+        </span>
+        <h1 class="display-4 fw-bold mb-3 text-white">Where Precision Meets Hospitality</h1>
+        <p class="lead text-light text-opacity-75 mx-auto mb-4" style="max-width: 680px;">
+          Seamless room reservation engine, interactive multi-photo suites, dynamic Room QR codes, and instant UPI payments in Indian Rupees (₹).
+        </p>
+
+        <!-- Quick filter pills -->
+        <div class="d-flex justify-content-center flex-wrap gap-2 mt-4">
+          <button class="btn btn-sm btn-light rounded-pill px-3 fw-bold" onclick="filterCategory('All')">All Accommodations</button>
+          <button class="btn btn-sm btn-outline-light rounded-pill px-3" onclick="filterCategory('Single Room')">Single Room</button>
+          <button class="btn btn-sm btn-outline-light rounded-pill px-3" onclick="filterCategory('Double Room')">Double Room</button>
+          <button class="btn btn-sm btn-outline-light rounded-pill px-3" onclick="filterCategory('Deluxe Room')">Deluxe Room</button>
+          <button class="btn btn-sm btn-outline-light rounded-pill px-3" onclick="filterCategory('Executive Suite')">Executive Suite</button>
+          <button class="btn btn-sm btn-outline-light rounded-pill px-3" onclick="filterCategory('Presidential Suite')">Presidential Suite</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Room Cards Grid -->
+    <div class="container py-5">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+          <h2 class="font-heading fw-bold text-dark mb-1">Our Accommodations</h2>
+          <p class="text-muted small mb-0">Browse photos, scan QR code, or book instantly in Indian Rupees (₹ INR).</p>
+        </div>
+        <span class="badge bg-primary px-3 py-2 rounded-pill">
+          <i class="bi bi-grid-fill me-1"></i> 8 Luxury Rooms
+        </span>
+      </div>
+
+      <div class="row g-4" id="roomGrid">
+        <!-- Rendered by JavaScript -->
+      </div>
+    </div>
+  </div>
+
+  <!-- VIEW 2: GUEST BOOKINGS -->
+  <div id="view-bookings" style="display: none;">
+    <div class="container py-5">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+          <span class="badge bg-primary text-uppercase px-2 py-1 mb-1">Guest Portal</span>
+          <h2 class="font-heading fw-bold mb-0">My Hotel Stays & Reservations</h2>
+          <p class="text-muted small mb-0">Review active reservations, download tax invoices, and explore stay itineraries.</p>
+        </div>
+        <button class="btn btn-outline-primary" onclick="switchView('home')">
+          <i class="bi bi-plus-circle me-1"></i> Book Another Room
+        </button>
+      </div>
+
+      <div class="d-flex flex-column gap-3" id="bookingsList">
+        <!-- Rendered by JavaScript -->
+      </div>
+    </div>
+  </div>
+
+  <!-- VIEW 3: FRONT DESK OPS -->
+  <div id="view-frontdesk" style="display: none;">
+    <div class="container py-5">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+          <span class="badge bg-info text-dark text-uppercase px-2 py-1 mb-1">Front Desk & Housekeeping</span>
+          <h2 class="font-heading fw-bold mb-0">Front Desk Stay Management</h2>
+          <p class="text-muted small mb-0">Live arrivals, 1-click check-ins, departures, and instant housekeeping room status toggles.</p>
+        </div>
+      </div>
+
+      <div class="card border rounded-3 shadow-sm bg-white p-4 mb-4">
+        <h5 class="fw-bold text-dark mb-3">Live Room Status Board</h5>
+        <div class="row g-3" id="frontDeskRoomCards">
+          <!-- Rendered by JavaScript -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VIEW 4: ADMIN EXECUTIVE DASHBOARD -->
+  <div id="view-admin" style="display: none;">
+    <div class="container py-5">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+          <span class="badge bg-danger text-uppercase px-2 py-1 mb-1">General Manager Control</span>
+          <h2 class="font-heading fw-bold mb-0">Executive Hotel Performance Dashboard</h2>
+          <p class="text-muted small mb-0">Live KPI analytics, room occupancy rates, revenue in ₹ INR, and room inventory management.</p>
+        </div>
+      </div>
+
+      <!-- KPI Cards -->
+      <div class="row g-3 mb-4">
+        <div class="col-sm-6 col-xl-3">
+          <div class="card border rounded-3 p-4 bg-white shadow-sm">
+            <div class="text-secondary small fw-semibold text-uppercase mb-1">Total Revenue</div>
+            <div class="fs-2 fw-bold text-success font-heading">₹1,84,980</div>
+            <div class="text-muted small mt-1"><i class="bi bi-arrow-up-right text-success me-1"></i> From 14 reservations</div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+          <div class="card border rounded-3 p-4 bg-white shadow-sm">
+            <div class="text-secondary small fw-semibold text-uppercase mb-1">Occupancy Rate</div>
+            <div class="fs-2 fw-bold text-dark font-heading">68%</div>
+            <div class="text-muted small mt-1">5 of 8 rooms currently occupied</div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+          <div class="card border rounded-3 p-4 bg-white shadow-sm">
+            <div class="text-secondary small fw-semibold text-uppercase mb-1">In-House Guests</div>
+            <div class="fs-2 fw-bold text-dark font-heading">9</div>
+            <div class="text-muted small mt-1">Checked-in on property</div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+          <div class="card border rounded-3 p-4 bg-white shadow-sm">
+            <div class="text-secondary small fw-semibold text-uppercase mb-1">Total Rooms</div>
+            <div class="fs-2 fw-bold text-dark font-heading">8</div>
+            <div class="text-muted small mt-1">5 Available • 1 Cleaning • 2 Occupied</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 1: ROOM PHOTOS & QR CODE MODAL -->
+  <div class="modal fade show" id="photosQRModal" tabIndex="-1" style="display: none; background-color: rgba(15, 23, 42, 0.82);">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+        <div class="modal-header bg-dark text-white p-3 p-md-4 no-print d-flex justify-content-between align-items-center">
+          <div class="d-flex align-items-center gap-2">
+            <span class="badge bg-warning text-dark fw-bold" id="modalRoomBadge">Room #101</span>
+            <h5 class="modal-title font-heading mb-0" id="modalRoomType">Single Room</h5>
+          </div>
+
+          <div class="btn-group btn-group-sm">
+            <button type="button" id="tabPhotosBtn" class="btn btn-light fw-bold text-dark" onclick="switchModalTab('photos')">
+              <i class="bi bi-images me-1 text-primary"></i> Photos
+            </button>
+            <button type="button" id="tabQRBtn" class="btn btn-outline-light" onclick="switchModalTab('qr')">
+              <i class="bi bi-qr-code-scan me-1 text-primary"></i> Room QR Option
+            </button>
+          </div>
+
+          <button type="button" class="btn-close btn-close-white" onclick="closeModal('photosQRModal')"></button>
+        </div>
+
+        <!-- TAB: PHOTOS -->
+        <div id="modalTabPhotos">
+          <div class="position-relative bg-black d-flex align-items-center justify-content-center" style="height: 360px; overflow: hidden;">
+            <img id="mainGalleryImg" src="" alt="Room Photo" class="w-100 h-100" style="object-fit: cover;">
+            <div class="position-absolute top-0 start-0 m-3">
+              <span class="badge bg-dark bg-opacity-75 text-white px-3 py-2 rounded-pill shadow-sm" id="photoCounter">
+                Photo 1 of 3
+              </span>
+            </div>
+            <button class="btn btn-dark btn-sm rounded-circle position-absolute start-0 top-50 translate-middle-y ms-3" style="width: 42px; height: 42px;" onclick="prevPhoto()">
+              <i class="bi bi-chevron-left fs-5"></i>
+            </button>
+            <button class="btn btn-dark btn-sm rounded-circle position-absolute end-0 top-50 translate-middle-y me-3" style="width: 42px; height: 42px;" onclick="nextPhoto()">
+              <i class="bi bi-chevron-right fs-5"></i>
+            </button>
+          </div>
+
+          <!-- Thumbnails -->
+          <div class="bg-light p-3 border-bottom d-flex gap-2 overflow-auto" id="thumbnailStrip">
+            <!-- Thumbnails injected by JS -->
+          </div>
+
+          <div class="p-4">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+              <div>
+                <h5 class="fw-bold mb-1" id="modalRoomDetailsTitle">Room Title</h5>
+                <p class="text-muted small mb-0" id="modalRoomDesc">Room Description</p>
+              </div>
+              <div class="text-end flex-shrink-0">
+                <div class="price-tag text-primary fs-3" id="modalRoomPrice">₹2,499</div>
+                <div class="text-muted small">per night (excl. 12% tax)</div>
+              </div>
+            </div>
+
+            <div class="d-flex flex-wrap gap-2 mb-4" id="modalRoomAmenities">
+              <!-- Amenities injected by JS -->
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+              <button class="btn btn-outline-primary fw-semibold" onclick="switchModalTab('qr')">
+                <i class="bi bi-qr-code-scan me-1"></i> Scan Room QR Code
+              </button>
+              <div class="d-flex gap-2">
+                <button class="btn btn-outline-secondary" onclick="closeModal('photosQRModal')">Close</button>
+                <button class="btn btn-primary fw-bold px-4" id="modalBookNowBtn" onclick="bookFromModal()">Book This Room</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB: QR OPTION -->
+        <div id="modalTabQR" style="display: none;" class="p-4 p-md-5">
+          <div id="printable-room-qr" class="bg-white border rounded-4 p-4 text-center mx-auto" style="max-width: 480px;">
+            <div class="d-flex align-items-center justify-content-center gap-2 mb-2">
+              <span class="bg-primary text-white p-1 rounded-2 d-inline-flex">
+                <i class="bi bi-buildings-fill fs-5"></i>
+              </span>
+              <h4 class="font-heading fw-bold mb-0">Hotel<span class="text-warning">Pro</span></h4>
+            </div>
+
+            <span class="badge bg-warning text-dark text-uppercase fw-bold px-3 py-1 rounded-pill mb-2" id="qrModalBadge">
+              Room #101 • Single Room
+            </span>
+            <h5 class="fw-bold mb-1">Room Photos & Mobile Tour</h5>
+            <p class="text-muted small mb-3">Scan this QR code with any smartphone camera to view all high-resolution photos and book on mobile.</p>
+
+            <div class="d-inline-block p-3 rounded-3 bg-light border shadow-sm mb-3">
+              <canvas id="qrCanvas" width="180" height="180"></canvas>
+            </div>
+
+            <div class="d-flex justify-content-center gap-2 mb-3">
+              <span class="badge bg-primary-subtle text-primary border small">📷 3 High-Res Photos</span>
+              <span class="badge bg-success-subtle text-success border small">₹ Live Rates in INR</span>
+            </div>
+
+            <div class="p-2 bg-light rounded-3 border small text-muted font-monospace text-truncate mb-2" id="qrDirectUrl">
+              https://hotelpro.com/?room=101&view=photos
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-between gap-2 mt-4 pt-3 border-top no-print">
+            <button class="btn btn-outline-dark fw-semibold" onclick="window.print()">
+              <i class="bi bi-printer-fill text-primary me-1"></i> Print QR Tent Card
+            </button>
+            <div class="d-flex gap-2">
+              <button class="btn btn-outline-primary" onclick="switchModalTab('photos')">
+                <i class="bi bi-images me-1"></i> View Photos
+              </button>
+              <button class="btn btn-primary fw-bold" onclick="bookFromModal()">
+                Book Stay Now
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 2: BOOKING MODAL WITH UPI QR CODE -->
+  <div class="modal fade show" id="bookingModal" tabIndex="-1" style="display: none; background-color: rgba(15, 23, 42, 0.82);">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+        <div class="modal-header bg-dark text-white p-4">
+          <div>
+            <span class="badge bg-warning text-dark text-uppercase fw-bold mb-1" id="bookModalBadge">Room #101</span>
+            <h4 class="modal-title font-heading mb-0">Confirm Your Luxury Reservation</h4>
+          </div>
+          <button type="button" class="btn-close btn-close-white" onclick="closeModal('bookingModal')"></button>
+        </div>
+
+        <div class="modal-body p-4">
+          <div class="row g-4">
+            <div class="col-md-7 border-end-md">
+              <!-- Dates -->
+              <div class="p-3 bg-light rounded-3 border mb-3">
+                <h6 class="fw-bold small text-uppercase mb-2"><i class="bi bi-calendar3 text-primary me-1"></i> 1. Stay Period</h6>
+                <div class="row g-2">
+                  <div class="col-6">
+                    <label class="form-label small text-secondary mb-1">Check-In</label>
+                    <input type="date" id="bookCheckIn" class="form-control form-control-sm" value="2026-10-30" onchange="updateBookingMath()">
+                  </div>
+                  <div class="col-6">
+                    <label class="form-label small text-secondary mb-1">Check-Out</label>
+                    <input type="date" id="bookCheckOut" class="form-control form-control-sm" value="2026-11-01" onchange="updateBookingMath()">
+                  </div>
+                </div>
+              </div>
+
+              <!-- Guest details -->
+              <div class="p-3 bg-light rounded-3 border mb-3">
+                <h6 class="fw-bold small text-uppercase mb-2"><i class="bi bi-person-lines-fill text-primary me-1"></i> 2. Guest Info</h6>
+                <div class="row g-2">
+                  <div class="col-12">
+                    <input type="text" id="bookGuestName" class="form-control form-control-sm" value="Michael Sterling" placeholder="Guest Name">
+                  </div>
+                  <div class="col-6">
+                    <input type="email" id="bookGuestEmail" class="form-control form-control-sm" value="guest@hotelpro.com" placeholder="Email">
+                  </div>
+                  <div class="col-6">
+                    <input type="tel" id="bookGuestPhone" class="form-control form-control-sm" value="+91 98765 43210" placeholder="Phone">
+                  </div>
+                </div>
+              </div>
+
+              <!-- Payment Method with UPI QR -->
+              <div class="p-3 bg-light rounded-3 border">
+                <h6 class="fw-bold small text-uppercase mb-2"><i class="bi bi-qr-code text-primary me-1"></i> 3. Payment: UPI / QR Code</h6>
+
+                <div class="bg-white p-3 rounded-3 border">
+                  <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-2">
+                    <span class="fw-bold small"><i class="bi bi-qr-code-scan text-primary me-1"></i> Scan to Pay (Google Pay / PhonePe / Paytm)</span>
+                    <span class="badge bg-success-subtle text-success border">Verified UPI</span>
+                  </div>
+
+                  <div class="row g-2 align-items-center">
+                    <div class="col-sm-5 text-center">
+                      <canvas id="upiQrCanvas" width="130" height="130" class="border p-1 rounded-2 bg-light"></canvas>
+                      <div class="badge bg-dark font-monospace mt-1" style="font-size: 0.7rem;">hotelpro@icici</div>
+                    </div>
+                    <div class="col-sm-7 small">
+                      <div class="d-flex justify-content-between mb-1">
+                        <span class="text-secondary">Payee:</span>
+                        <strong>HotelPro Hospitality</strong>
+                      </div>
+                      <div class="d-flex justify-content-between mb-2">
+                        <span class="text-secondary">Amount in ₹:</span>
+                        <strong class="text-primary fs-6" id="upiAmountText">₹5,598</strong>
+                      </div>
+                      <ol class="ps-3 mb-0 text-muted" style="font-size: 0.72rem;">
+                        <li>Scan QR code with UPI app.</li>
+                        <li>Complete payment in ₹ (INR).</li>
+                        <li>Enter 12-digit UTR below.</li>
+                      </ol>
+                    </div>
+                  </div>
+
+                  <!-- UTR Verification Input -->
+                  <div class="pt-2 border-top mt-2">
+                    <label class="form-label small fw-bold mb-1">12-Digit UPI Reference Number (UTR):</label>
+                    <div class="input-group input-group-sm">
+                      <input type="text" id="upiUtrInput" maxlength="12" class="form-control font-monospace" placeholder="e.g. 428910293847" value="428910293847">
+                      <button class="btn btn-success fw-bold px-3" type="button" onclick="verifyUpi()">
+                        <i class="bi bi-check-circle-fill me-1"></i> Verify UTR
+                      </button>
+                    </div>
+                    <div id="utrSuccessAlert" class="alert alert-success py-1 px-2 small mt-2 mb-0 d-flex align-items-center gap-1">
+                      <i class="bi bi-check-circle-fill"></i>
+                      <span><strong>UPI Payment Verified!</strong> Ref #428910293847 confirmed.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Booking Summary on the right -->
+            <div class="col-md-5">
+              <div class="bg-light p-3 rounded-3 border h-100 d-flex flex-column justify-content-between">
+                <div>
+                  <h6 class="fw-bold mb-3">Booking Summary</h6>
+                  <div class="d-flex align-items-center gap-2 mb-3 p-2 bg-white rounded-3 border">
+                    <img id="bookSummaryImg" src="" alt="Room" style="width: 70px; height: 50px; object-fit: cover; border-radius: 6px;">
+                    <div>
+                      <div class="fw-bold small" id="bookSummaryType">Room Type</div>
+                      <div class="text-muted small" id="bookSummaryNum">Room #101</div>
+                    </div>
+                  </div>
+
+                  <div class="border-top pt-2 small">
+                    <div class="d-flex justify-content-between mb-1">
+                      <span class="text-secondary">Nightly Rate:</span>
+                      <strong id="bookRateNight">₹2,499</strong>
+                    </div>
+                    <div class="d-flex justify-content-between mb-1">
+                      <span class="text-secondary">Duration:</span>
+                      <strong id="bookNights">2 Nights</strong>
+                    </div>
+                    <div class="d-flex justify-content-between mb-1">
+                      <span class="text-secondary">Room Subtotal:</span>
+                      <strong id="bookSubtotal">₹4,998</strong>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                      <span class="text-secondary">GST & Hospitality Tax (12%):</span>
+                      <strong id="bookTax">₹600</strong>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="border-top pt-3">
+                  <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="fw-bold">Total Paid:</span>
+                    <span class="price-tag text-primary fs-3" id="bookTotal">₹5,598</span>
+                  </div>
+                  <button class="btn btn-primary w-100 fw-bold py-2 shadow-sm" onclick="completeBooking()">
+                    <i class="bi bi-lock-fill me-1"></i> Confirm & View Tax Invoice
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 3: INVOICE MODAL -->
+  <div class="modal fade show" id="invoiceModal" tabIndex="-1" style="display: none; background-color: rgba(15, 23, 42, 0.82);">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+        <div class="modal-header bg-dark text-white p-3 no-print">
+          <h5 class="modal-title font-heading">Official Booking Invoice & Receipt</h5>
+          <button type="button" class="btn-close btn-close-white" onclick="closeModal('invoiceModal')"></button>
+        </div>
+
+        <div class="modal-body p-4 p-md-5" id="printable-invoice">
+          <div class="d-flex justify-content-between align-items-start border-bottom pb-4 mb-4">
+            <div>
+              <div class="d-flex align-items-center gap-2 mb-2">
+                <span class="bg-primary text-white p-2 rounded-2 d-inline-flex">
+                  <i class="bi bi-buildings-fill fs-5"></i>
+                </span>
+                <h3 class="font-heading fw-bold mb-0">Hotel<span class="text-warning">Pro</span></h3>
+              </div>
+              <div class="text-muted small">
+                777 Hospitality Grand Boulevard, Suite 100<br>
+                Email: reservations@hotelpro.com | Tel: +1 (800) 555-HOTEL
+              </div>
+            </div>
+            <div class="text-end">
+              <span class="badge bg-success-subtle text-success border border-success-subtle fs-6 px-3 py-1 fw-bold mb-2 d-inline-block">
+                ● PAID VIA UPI QR
+              </span>
+              <div class="fw-bold text-dark fs-5" id="invNumber">Invoice #HP-9821-4401</div>
+              <div class="text-muted small">Issued: Today</div>
+            </div>
+          </div>
+
+          <div class="row g-4 mb-4">
+            <div class="col-sm-6">
+              <h6 class="text-uppercase text-secondary small fw-bold mb-1">Bill To:</h6>
+              <div class="fw-bold fs-5" id="invGuestName">Michael Sterling</div>
+              <div class="text-muted small">guest@hotelpro.com</div>
+              <div class="text-muted small">+91 98765 43210</div>
+            </div>
+            <div class="col-sm-6 text-sm-end">
+              <h6 class="text-uppercase text-secondary small fw-bold mb-1">Reservation Info:</h6>
+              <div class="fw-bold" id="invRoomInfo">Room #101 — Single Room</div>
+              <div class="text-muted small">Stay: 2 Nights • 1 Guest</div>
+              <div class="badge bg-light text-dark border mt-1">UPI Ref: 428910293847</div>
+            </div>
+          </div>
+
+          <table class="table table-bordered mb-4">
+            <thead class="table-light">
+              <tr>
+                <th>Description</th>
+                <th class="text-center">Rate / Night</th>
+                <th class="text-center">Nights</th>
+                <th class="text-end">Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <strong id="invDesc">Single Room</strong>
+                  <div class="text-muted small">Includes high-speed Wi-Fi & artisanal breakfast</div>
+                </td>
+                <td class="text-center" id="invRate">₹2,499</td>
+                <td class="text-center">2</td>
+                <td class="text-end fw-semibold" id="invSubtotal">₹4,998</td>
+              </tr>
+              <tr>
+                <td colspan="3" class="text-end text-muted small">GST & Occupancy Tax (12%)</td>
+                <td class="text-end fw-semibold" id="invTax">₹600</td>
+              </tr>
+              <tr class="table-light">
+                <td colspan="3" class="text-end fw-bold fs-5">Total Paid</td>
+                <td class="text-end fw-bold fs-5 text-primary" id="invTotal">₹5,598</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="border-top pt-3 text-muted small">
+            <em>Thank you for staying with HotelPro. For inquiries, present this invoice receipt at reception.</em>
+          </div>
+        </div>
+
+        <div class="modal-footer bg-light p-3 no-print">
+          <button class="btn btn-outline-secondary" onclick="closeModal('invoiceModal')">Close</button>
+          <button class="btn btn-primary fw-bold px-4" onclick="window.print()">
+            <i class="bi bi-printer-fill me-1"></i> Print / Save as PDF
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Demo Sample Rooms Data with Multiple Photos and INR Pricing
+    const ROOMS = [
+      {
+        id: '101',
+        roomNumber: '101',
+        type: 'Single Room',
+        pricePerNight: 2499,
+        capacity: 1,
+        bedType: 'Single Bed',
+        floor: 1,
+        status: 'available',
+        rating: 4.6,
+        images: [
+          'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1000&q=80',
+          'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=800&q=80',
+          'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?auto=format&fit=crop&w=1000&q=80'
+        ],
+        amenities: ['High-speed Wi-Fi', 'Smart TV', 'Air Conditioning', 'Work Desk', 'Daily Housekeeping'],
+        description: 'Cozy and functional single room tailored for solo business travelers or short stays with ergonomic workspace.'
+      },
+      {
+        id: '102',
+        roomNumber: '102',
+        type: 'Single Room',
+        pricePerNight: 2799,
+        capacity: 1,
+        bedType: 'Single Bed',
+        floor: 1,
+        status: 'available',
+        rating: 4.7,
+        images: [
+          'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?auto=format&fit=crop&w=1000&q=80',
+          'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1000&q=80',
+          'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=800&q=80'
+        ],
+        amenities: ['High-speed Wi-Fi', 'Smart TV', 'Air Conditioning', 'Espresso Machine', 'City View'],
+        description: 'Modern minimalist single room equipped with premium soundproofing and high-speed fiber internet.'
+      },
+      {
+        id: '201',
+        roomNumber: '201',
+        type: 'Double Room',
+        pricePerNight: 3999,
+        capacity: 2,
+        bedType: 'Queen Bed',
+        floor: 2,
+        status: 'occupied',
+        rating: 4.8,
+        images: [
+          'https://images.unsplash.com/photo-1591088398332-8a7791972843?auto=format&fit=crop&w=1000&q=80',
+          'https://images.unsplash.com/photo-1566665797739-1674de7a421a?auto=format&fit=crop&w=800&q=80',
+          'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=800&q=80'
+        ],
+        amenities: ['High-speed Wi-Fi', 'Smart TV', 'Air Conditioning', 'Balcony', 'Mini Bar', 'En-suite Rainfall Shower'],
+        description: 'Spacious double room featuring private garden-facing balcony and indulgent premium bedding.'
+      },
+      {
+        id: '202',
+        roomNumber: '202',
+        type: 'Double Room',
+        pricePerNight: 4499,
+        capacity: 2,
+        bedType: 'King Bed',
+        floor: 2,
+        status: 'available',
+        rating: 4.8,
+        images: [
+          'https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=1000&q=80',
+          'https://images.unsplash.com/photo-1591088398332-8a7791972843?auto=format&fit=crop&w=1000&q=80',
+          'https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&w=1000&q=80'
+        ],
+        amenities: ['High-speed Wi-Fi', 'Smart TV', 'Air Conditioning', 'Mini Refrigerator', 'Safe Deposit Box', 'Robes & Slippers'],
+        description: 'Elegantly appointed double room designed with soothing acoustic tones and plush king mattress.'
+      },
+      {
+        id: '301',
+        roomNumber: '301',
+        type: 'Deluxe Room',
+        pricePerNight: 6999,
+        capacity: 3,
+        bedType: 'King Bed + Sofa Bed',
+        floor: 3,
+        status: 'occupied',
+        rating: 4.9,
+        images: [
+          'https://images.unsplash.com/photo-1578683010236-d716f9a3f461?auto=format&fit=crop&w=1000&q=80',
+          'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=800&q=80',
+          'https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=1000&q=80'
+        ],
+        amenities: ['Panoramic View', 'High-speed Wi-Fi', 'Smart TV 55"', 'Marble Bathroom', 'Bathtub', 'Complimentary Breakfast'],
+        description: 'High-floor deluxe retreat offering floor-to-ceiling windows, marble bathroom, and daily artisanal breakfast.'
+      },
+      {
+        id: '302',
+        roomNumber: '302',
+        type: 'Deluxe Room',
+        pricePerNight: 7499,
+        capacity: 3,
+        bedType: 'King Bed',
+        floor: 3,
+        status: 'available',
+        rating: 4.9,
+        images: [
+          'https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&w=1000&q=80',
+          'https://images.unsplash.com/photo-1578683010236-d716f9a3f461?auto=format&fit=crop&w=1000&q=80',
+          'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=800&q=80'
+        ],
+        amenities: ['City Skyline View', 'High-speed Wi-Fi', 'Complimentary Minibar', 'Soaking Tub', 'Pillow Menu', 'Turndown Service'],
+        description: 'Refined deluxe quarters featuring customized pillow selection, deep soaking tub, and skyline vistas.'
+      },
+      {
+        id: '401',
+        roomNumber: '401',
+        type: 'Executive Suite',
+        pricePerNight: 12999,
+        capacity: 4,
+        bedType: 'Master King + Twin Sleeper',
+        floor: 4,
+        status: 'available',
+        rating: 5.0,
+        images: [
+          'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1000&q=80',
+          'https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=800&q=80',
+          'https://images.unsplash.com/photo-1578683010236-d716f9a3f461?auto=format&fit=crop&w=1000&q=80',
+          'https://images.unsplash.com/photo-1566665797739-1674de7a421a?auto=format&fit=crop&w=800&q=80'
+        ],
+        amenities: ['Separate Living Room', 'Club Lounge Access', 'Private Bar', 'Jacuzzi', 'Express VIP Check-in', 'Evening Cocktails'],
+        description: 'Corner executive suite with dedicated dining parlor, club lounge privileges, and bespoke concierge attention.'
+      },
+      {
+        id: '501',
+        roomNumber: '501',
+        type: 'Presidential Suite',
+        pricePerNight: 24999,
+        capacity: 4,
+        bedType: 'Royal Master Bed',
+        floor: 5,
+        status: 'available',
+        rating: 5.0,
+        images: [
+          'https://images.unsplash.com/photo-1578683010236-d716f9a3f461?auto=format&fit=crop&w=1000&q=80',
+          'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=800&q=80',
+          'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1000&q=80',
+          'https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=1000&q=80'
+        ],
+        amenities: ['Private Rooftop Terrace', 'Heated Plunge Pool', 'Personal Butler 24/7', 'Private Elevator Access', 'Full Kitchenette', 'Limousine Transfer'],
+        description: 'The crown jewel of HotelPro. Full penthouse level with private plunge pool, panoramic skyline terrace, and 24/7 butler.'
+      }
+    ];
+
+    let currentSelectedRoom = ROOMS[0];
+    let currentPhotoIdx = 0;
+    let selectedFilterCat = 'All';
+
+    function renderRooms() {
+      const grid = document.getElementById('roomGrid');
+      const filtered = selectedFilterCat === 'All' ? ROOMS : ROOMS.filter(r => r.type === selectedFilterCat);
+      
+      grid.innerHTML = filtered.map(room => `
+        <div class="col-md-6 col-lg-4">
+          <div class="card room-card h-100 shadow-sm">
+            <div class="room-img-container position-relative">
+              <img src="${room.images[0]}" alt="${room.type}" onclick="openPhotosModal('${room.id}', 'photos')">
+              <span class="badge bg-dark bg-opacity-75 text-white position-absolute top-0 start-0 m-2">Room #${room.roomNumber}</span>
+              <span class="badge ${room.status === 'available' ? 'bg-success' : 'bg-danger'} position-absolute bottom-0 start-0 m-2 text-uppercase">
+                ${room.status}
+              </span>
+              <span class="badge bg-warning text-dark fw-bold position-absolute top-0 end-0 m-2">
+                ★ ${room.rating}
+              </span>
+              <!-- Photos count pill -->
+              <button type="button" class="btn btn-sm p-0 position-absolute bottom-0 end-0 m-2 border-0" onclick="openPhotosModal('${room.id}', 'photos')">
+                <span class="badge bg-dark bg-opacity-75 text-white py-1 px-2 rounded-pill shadow-xs">
+                  <i class="bi bi-images text-warning me-1"></i>${room.images.length} Photos
+                </span>
+              </button>
+            </div>
+
+            <div class="card-body d-flex flex-column p-4">
+              <div class="d-flex justify-content-between align-items-start mb-2">
+                <h5 class="card-title fw-bold text-dark mb-0">${room.type}</h5>
+                <span class="badge bg-light text-secondary border small">Floor ${room.floor}</span>
+              </div>
+              <p class="text-muted small mb-3" style="min-height: 40px;">${room.description}</p>
+              
+              <div class="d-flex gap-2 mb-3">
+                <span class="badge bg-light text-dark border"><i class="bi bi-people-fill text-primary me-1"></i> ${room.capacity} Guests</span>
+                <span class="badge bg-light text-dark border"><i class="bi bi-moon-stars-fill text-primary me-1"></i> ${room.bedType}</span>
+              </div>
+
+              <div class="mt-auto pt-3 border-top d-flex align-items-center justify-content-between">
+                <div>
+                  <div class="price-tag text-dark">₹${room.pricePerNight.toLocaleString('en-IN')}</div>
+                  <div class="text-muted small" style="font-size: 0.72rem;">per night (excl. tax)</div>
+                </div>
+
+                <div class="d-flex gap-2">
+                  <button class="btn btn-outline-primary btn-sm px-2 d-flex align-items-center gap-1" onclick="openPhotosModal('${room.id}', 'qr')" title="Scan Room Photos QR Code">
+                    <i class="bi bi-qr-code-scan"></i>
+                    <span class="small fw-semibold d-none d-sm-inline">Photos QR</span>
+                  </button>
+
+                  <button class="btn btn-outline-secondary btn-sm px-2" onclick="openPhotosModal('${room.id}', 'photos')" title="View Photos">
+                    <i class="bi bi-eye"></i>
+                  </button>
+
+                  <button class="btn btn-sm px-3 fw-bold ${room.status === 'available' ? 'btn-primary shadow-sm' : 'btn-secondary disabled'}" onclick="openBookingModal('${room.id}')" ${room.status !== 'available' ? 'disabled' : ''}>
+                    ${room.status === 'available' ? 'Book Stay' : 'Unavailable'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderFrontDesk() {
+      const container = document.getElementById('frontDeskRoomCards');
+      container.innerHTML = ROOMS.map(room => `
+        <div class="col-sm-6 col-md-4 col-xl-3">
+          <div class="card h-100 border shadow-sm rounded-3 overflow-hidden">
+            <img src="${room.images[0]}" alt="${room.type}" style="height: 120px; object-fit: cover;">
+            <div class="card-body p-3">
+              <div class="d-flex justify-content-between mb-1">
+                <strong class="text-dark">Room #${room.roomNumber}</strong>
+                <span class="text-primary fw-bold">₹${room.pricePerNight.toLocaleString('en-IN')}</span>
+              </div>
+              <div class="text-muted small mb-2">${room.type} • Floor ${room.floor}</div>
+              
+              <select class="form-select form-select-sm mb-2" onchange="updateRoomStatus('${room.id}', this.value)">
+                <option value="available" ${room.status === 'available' ? 'selected' : ''}>🟢 Available</option>
+                <option value="occupied" ${room.status === 'occupied' ? 'selected' : ''}>🔴 Occupied</option>
+                <option value="cleaning" ${room.status === 'cleaning' ? 'selected' : ''}>🔵 Needs Cleaning</option>
+                <option value="maintenance" ${room.status === 'maintenance' ? 'selected' : ''}>🟡 Maintenance</option>
+              </select>
+
+              <button class="btn btn-outline-primary btn-sm w-100 d-flex align-items-center justify-content-center gap-1" onclick="openPhotosModal('${room.id}', 'qr')">
+                <i class="bi bi-qr-code"></i> Room Photos QR
+              </button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderBookings() {
+      const list = document.getElementById('bookingsList');
+      list.innerHTML = `
+        <div class="card border rounded-3 p-3 bg-white shadow-sm">
+          <div class="row align-items-center g-3">
+            <div class="col-md-4 d-flex align-items-center gap-3">
+              <img src="${ROOMS[4].images[0]}" class="rounded-3 shadow-xs" style="width: 100px; height: 75px; object-fit: cover;">
+              <div>
+                <span class="badge bg-dark mb-1">Room #301</span>
+                <h5 class="fw-bold mb-0">Deluxe Room</h5>
+                <div class="text-muted small">Ref: <strong>HP-9821-4401</strong></div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="text-muted small">Stay Period:</div>
+              <div class="fw-bold small">Oct 30, 2026 to Nov 01, 2026</div>
+              <span class="badge bg-light text-secondary border">2 Nights • 2 Guests</span>
+            </div>
+            <div class="col-md-2">
+              <div class="text-muted small">Total Paid:</div>
+              <div class="price-tag text-primary fs-4">₹15,678</div>
+              <span class="status-pill status-confirmed mt-1">Confirmed</span>
+            </div>
+            <div class="col-md-3 text-md-end">
+              <button class="btn btn-outline-dark btn-sm fw-semibold" onclick="showSampleInvoice()">
+                <i class="bi bi-file-earmark-text me-1 text-primary"></i> View Tax Invoice
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function openPhotosModal(roomId, tab = 'photos') {
+      const room = ROOMS.find(r => r.id === roomId) || ROOMS[0];
+      currentSelectedRoom = room;
+      currentPhotoIdx = 0;
+
+      document.getElementById('modalRoomBadge').textContent = `Room #${room.roomNumber}`;
+      document.getElementById('modalRoomType').textContent = room.type;
+      document.getElementById('modalRoomDetailsTitle').textContent = `${room.type} (Room #${room.roomNumber})`;
+      document.getElementById('modalRoomDesc').textContent = room.description;
+      document.getElementById('modalRoomPrice').textContent = `₹${room.pricePerNight.toLocaleString('en-IN')}`;
+
+      // Amenities
+      document.getElementById('modalRoomAmenities').innerHTML = room.amenities.map(a => `
+        <span class="badge bg-light text-dark border py-2 px-3">✓ ${a}</span>
+      `).join('');
+
+      updateGalleryPhoto();
+      renderThumbnails();
+      generateRoomQR(room);
+
+      switchModalTab(tab);
+      document.getElementById('photosQRModal').style.display = 'block';
+    }
+
+    function updateGalleryPhoto() {
+      const room = currentSelectedRoom;
+      document.getElementById('mainGalleryImg').src = room.images[currentPhotoIdx];
+      document.getElementById('photoCounter').textContent = `Photo ${currentPhotoIdx + 1} of ${room.images.length}`;
+      renderThumbnails();
+    }
+
+    function renderThumbnails() {
+      const strip = document.getElementById('thumbnailStrip');
+      strip.innerHTML = currentSelectedRoom.images.map((img, idx) => `
+        <button class="btn p-0 rounded-2 overflow-hidden border flex-shrink-0 ${idx === currentPhotoIdx ? 'border-primary shadow' : 'opacity-75'}" style="width: 74px; height: 50px; outline: ${idx === currentPhotoIdx ? '2px solid #0d6efd' : 'none'};" onclick="currentPhotoIdx = ${idx}; updateGalleryPhoto();">
+          <img src="${img}" class="w-100 h-100" style="object-fit: cover;">
+        </button>
+      `).join('');
+    }
+
+    function nextPhoto() {
+      currentPhotoIdx = (currentPhotoIdx + 1) % currentSelectedRoom.images.length;
+      updateGalleryPhoto();
+    }
+
+    function prevPhoto() {
+      currentPhotoIdx = (currentPhotoIdx - 1 + currentSelectedRoom.images.length) % currentSelectedRoom.images.length;
+      updateGalleryPhoto();
+    }
+
+    function switchModalTab(tab) {
+      if (tab === 'photos') {
+        document.getElementById('modalTabPhotos').style.display = 'block';
+        document.getElementById('modalTabQR').style.display = 'none';
+        document.getElementById('tabPhotosBtn').className = 'btn btn-light fw-bold text-dark';
+        document.getElementById('tabQRBtn').className = 'btn btn-outline-light';
+      } else {
+        document.getElementById('modalTabPhotos').style.display = 'none';
+        document.getElementById('modalTabQR').style.display = 'block';
+        document.getElementById('tabPhotosBtn').className = 'btn btn-outline-light';
+        document.getElementById('tabQRBtn').className = 'btn btn-light fw-bold text-dark';
+      }
+    }
+
+    function generateRoomQR(room) {
+      document.getElementById('qrModalBadge').textContent = `Room #${room.roomNumber} • ${room.type}`;
+      const url = `https://hotelpro.com/?room=${room.roomNumber}&view=photos`;
+      document.getElementById('qrDirectUrl').textContent = url;
+
+      if (window.QRCode) {
+        QRCode.toCanvas(document.getElementById('qrCanvas'), url, { width: 180, margin: 1 }, function (error) {
+          if (error) console.error(error);
+        });
+      }
+    }
+
+    function openBookingModal(roomId) {
+      closeModal('photosQRModal');
+      const room = ROOMS.find(r => r.id === roomId) || currentSelectedRoom;
+      currentSelectedRoom = room;
+
+      document.getElementById('bookModalBadge').textContent = `Room #${room.roomNumber} • ${room.type}`;
+      document.getElementById('bookSummaryType').textContent = room.type;
+      document.getElementById('bookSummaryNum').textContent = `Room #${room.roomNumber}`;
+      document.getElementById('bookSummaryImg').src = room.images[0];
+      document.getElementById('bookRateNight').textContent = `₹${room.pricePerNight.toLocaleString('en-IN')}`;
+
+      updateBookingMath();
+      document.getElementById('bookingModal').style.display = 'block';
+    }
+
+    function updateBookingMath() {
+      const checkIn = new Date(document.getElementById('bookCheckIn').value);
+      const checkOut = new Date(document.getElementById('bookCheckOut').value);
+      let nights = Math.max(1, Math.round((checkOut - checkIn) / (1000 * 60 * 60 * 24)));
+      if (isNaN(nights) || nights < 1) nights = 1;
+
+      const rate = currentSelectedRoom.pricePerNight;
+      const subtotal = rate * nights;
+      const tax = Math.round(subtotal * 0.12);
+      const total = subtotal + tax;
+
+      document.getElementById('bookNights').textContent = `${nights} Night(s)`;
+      document.getElementById('bookSubtotal').textContent = `₹${subtotal.toLocaleString('en-IN')}`;
+      document.getElementById('bookTax').textContent = `₹${tax.toLocaleString('en-IN')}`;
+      document.getElementById('bookTotal').textContent = `₹${total.toLocaleString('en-IN')}`;
+      document.getElementById('upiAmountText').textContent = `₹${total.toLocaleString('en-IN')}`;
+
+      // Generate UPI QR code
+      const upiUrl = `upi://pay?pa=hotelpro@icici&pn=HotelPro%20Hospitality&am=${total}&cu=INR&tn=Booking%20Room%20${currentSelectedRoom.roomNumber}`;
+      if (window.QRCode) {
+        QRCode.toCanvas(document.getElementById('upiQrCanvas'), upiUrl, { width: 130, margin: 1 });
+      }
+    }
+
+    function verifyUpi() {
+      const utr = document.getElementById('upiUtrInput').value;
+      if (utr.length === 12) {
+        document.getElementById('utrSuccessAlert').style.display = 'flex';
+      } else {
+        alert('Please enter a 12-digit UPI Reference Number (UTR).');
+      }
+    }
+
+    function completeBooking() {
+      closeModal('bookingModal');
+      showSampleInvoice();
+    }
+
+    function showSampleInvoice() {
+      const room = currentSelectedRoom;
+      document.getElementById('invRoomInfo').textContent = `Room #${room.roomNumber} — ${room.type}`;
+      document.getElementById('invDesc').textContent = room.type;
+      document.getElementById('invRate').textContent = `₹${room.pricePerNight.toLocaleString('en-IN')}`;
+      
+      const sub = room.pricePerNight * 2;
+      const tax = Math.round(sub * 0.12);
+      const tot = sub + tax;
+
+      document.getElementById('invSubtotal').textContent = `₹${sub.toLocaleString('en-IN')}`;
+      document.getElementById('invTax').textContent = `₹${tax.toLocaleString('en-IN')}`;
+      document.getElementById('invTotal').textContent = `₹${tot.toLocaleString('en-IN')}`;
+
+      document.getElementById('invoiceModal').style.display = 'block';
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).style.display = 'none';
+    }
+
+    function bookFromModal() {
+      closeModal('photosQRModal');
+      openBookingModal(currentSelectedRoom.id);
+    }
+
+    function filterCategory(cat) {
+      selectedFilterCat = cat;
+      renderRooms();
+    }
+
+    function updateRoomStatus(id, newStatus) {
+      const room = ROOMS.find(r => r.id === id);
+      if (room) {
+        room.status = newStatus;
+        renderRooms();
+        renderFrontDesk();
+      }
+    }
+
+    function switchView(viewName) {
+      ['home', 'bookings', 'frontdesk', 'admin'].forEach(v => {
+        document.getElementById(`view-${v}`).style.display = (v === viewName) ? 'block' : 'none';
+        const navBtn = document.getElementById(`nav-${v}`);
+        if (navBtn) {
+          if (v === viewName) {
+            navBtn.className = 'nav-link btn btn-link text-decoration-none px-3 py-2 rounded-2 text-white bg-secondary bg-opacity-25 fw-semibold';
+          } else {
+            navBtn.className = 'nav-link btn btn-link text-decoration-none px-3 py-2 rounded-2 text-light text-opacity-75';
+          }
+        }
+      });
+      if (viewName === 'frontdesk') renderFrontDesk();
+      if (viewName === 'bookings') renderBookings();
+    }
+
+    function handleRoleChange(role) {
+      const badge = document.getElementById('userBadge');
+      if (role === 'admin') {
+        badge.className = 'badge bg-danger px-3 py-2 rounded-pill';
+        badge.innerHTML = '<i class="bi bi-shield-check me-1"></i> Admin: Alexander Wright';
+      } else if (role === 'staff') {
+        badge.className = 'badge bg-info text-dark px-3 py-2 rounded-pill';
+        badge.innerHTML = '<i class="bi bi-person-badge-fill me-1"></i> Staff: Elena Rostova';
+      } else {
+        badge.className = 'badge bg-primary px-3 py-2 rounded-pill';
+        badge.innerHTML = '<i class="bi bi-person-fill me-1"></i> Guest: Michael Sterling';
+      }
+    }
+
+    // Initialize
+    window.addEventListener('DOMContentLoaded', () => {
+      renderRooms();
+      renderFrontDesk();
+      renderBookings();
+    });
+  </script>
+</body>
+</html>
