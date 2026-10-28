@@ -57,10 +57,10 @@ app.use((err, req, res, next) => {
 });
 
 // Export the Express app for Vercel
-module.exports = app;
+//module.exports = app;
 const PORT = process.env.PORT || 5000;
 const server = app.listen(PORT, () => {
   console.log(`[HotelPro API] Server running in ${process.env.NODE_ENV || 'development'} mode on http://localhost:${PORT}`);
 });
-
+module.exports = app;
 
