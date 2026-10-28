@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const API = axios.create({
-  baseURL: 'https://dashboard.render.com/web/srv-dbh1p98m7kps73f1oe5g/api',
+  baseURL: 'https://hotelpro-iia1.onrender.com/api',
 });
 
 // Automatically inject JWT token into request headers
