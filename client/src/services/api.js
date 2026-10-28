@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const API = axios.create({
-  baseURL: '/api',
+  baseURL: 'https://dashboard.render.com/web/srv-dbh1p98m7kps73f1oe5g/api';
 });
 
 // Automatically inject JWT token into request headers
