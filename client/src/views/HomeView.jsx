@@ -4,9 +4,158 @@ import HeroBanner from '../components/HeroBanner';
 import RoomCard from '../components/RoomCard';
 import RoomPhotosQRModal from '../components/RoomPhotosQRModal';
 
+const DEFAULT_ROOMS = [
+  {
+    _id: '671e01',
+    roomNumber: '101',
+    type: 'Single Room',
+    pricePerNight: 2499,
+    capacity: 1,
+    bedType: 'Single Bed',
+    floor: 1,
+    status: 'available',
+    rating: 4.6,
+    amenities: ['High-speed Wi-Fi', 'Smart TV', 'Air Conditioning', 'Work Desk', 'Daily Housekeeping'],
+    images: [
+      'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1000&q=80',
+      'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?auto=format&fit=crop&w=1000&q=80',
+    ],
+    description: 'Cozy and functional single room tailored for solo business travelers or short stays with ergonomic workspace.',
+  },
+  {
+    _id: '671e02',
+    roomNumber: '102',
+    type: 'Single Room',
+    pricePerNight: 2799,
+    capacity: 1,
+    bedType: 'Single Bed',
+    floor: 1,
+    status: 'available',
+    rating: 4.7,
+    amenities: ['High-speed Wi-Fi', 'Smart TV', 'Air Conditioning', 'Espresso Machine', 'City View'],
+    images: [
+      'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?auto=format&fit=crop&w=1000&q=80',
+      'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1000&q=80',
+      'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=800&q=80',
+    ],
+    description: 'Modern minimalist single room equipped with premium soundproofing and high-speed fiber internet.',
+  },
+  {
+    _id: '671e03',
+    roomNumber: '201',
+    type: 'Double Room',
+    pricePerNight: 3999,
+    capacity: 2,
+    bedType: 'Queen Bed',
+    floor: 2,
+    status: 'available',
+    rating: 4.8,
+    amenities: ['High-speed Wi-Fi', 'Smart TV', 'Air Conditioning', 'Balcony', 'Mini Bar', 'En-suite Rainfall Shower'],
+    images: [
+      'https://images.unsplash.com/photo-1591088398332-8a7791972843?auto=format&fit=crop&w=1000&q=80',
+      'https://images.unsplash.com/photo-1566665797739-1674de7a421a?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=800&q=80',
+    ],
+    description: 'Spacious double room featuring private garden-facing balcony and indulgent premium bedding.',
+  },
+  {
+    _id: '671e04',
+    roomNumber: '202',
+    type: 'Double Room',
+    pricePerNight: 4499,
+    capacity: 2,
+    bedType: 'King Bed',
+    floor: 2,
+    status: 'available',
+    rating: 4.8,
+    amenities: ['High-speed Wi-Fi', 'Smart TV', 'Air Conditioning', 'Mini Refrigerator', 'Safe Deposit Box', 'Robes & Slippers'],
+    images: [
+      'https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=1000&q=80',
+      'https://images.unsplash.com/photo-1591088398332-8a7791972843?auto=format&fit=crop&w=1000&q=80',
+      'https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&w=1000&q=80',
+    ],
+    description: 'Elegantly appointed double room designed with soothing acoustic tones and plush king mattress.',
+  },
+  {
+    _id: '671e05',
+    roomNumber: '301',
+    type: 'Deluxe Room',
+    pricePerNight: 6999,
+    capacity: 3,
+    bedType: 'King Bed + Sofa Bed',
+    floor: 3,
+    status: 'available',
+    rating: 4.9,
+    amenities: ['Panoramic View', 'High-speed Wi-Fi', 'Smart TV 55"', 'Marble Bathroom', 'Bathtub', 'Complimentary Breakfast'],
+    images: [
+      'https://images.unsplash.com/photo-1578683010236-d716f9a3f461?auto=format&fit=crop&w=1000&q=80',
+      'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=1000&q=80',
+    ],
+    description: 'High-floor deluxe retreat offering floor-to-ceiling windows, marble bathroom, and daily artisanal breakfast.',
+  },
+  {
+    _id: '671e06',
+    roomNumber: '302',
+    type: 'Deluxe Room',
+    pricePerNight: 7499,
+    capacity: 3,
+    bedType: 'King Bed',
+    floor: 3,
+    status: 'available',
+    rating: 4.9,
+    amenities: ['City Skyline View', 'High-speed Wi-Fi', 'Complimentary Minibar', 'Soaking Tub', 'Pillow Menu', 'Turndown Service'],
+    images: [
+      'https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&w=1000&q=80',
+      'https://images.unsplash.com/photo-1578683010236-d716f9a3f461?auto=format&fit=crop&w=1000&q=80',
+      'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=800&q=80',
+    ],
+    description: 'Refined deluxe quarters featuring customized pillow selection, deep soaking tub, and skyline vistas.',
+  },
+  {
+    _id: '671e07',
+    roomNumber: '401',
+    type: 'Executive Suite',
+    pricePerNight: 12999,
+    capacity: 4,
+    bedType: 'Master King + Twin Sleeper',
+    floor: 4,
+    status: 'available',
+    rating: 5.0,
+    amenities: ['Separate Living Room', 'Club Lounge Access', 'Private Bar', 'Jacuzzi', 'Express VIP Check-in', 'Evening Cocktails'],
+    images: [
+      'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1000&q=80',
+      'https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1578683010236-d716f9a3f461?auto=format&fit=crop&w=1000&q=80',
+      'https://images.unsplash.com/photo-1566665797739-1674de7a421a?auto=format&fit=crop&w=800&q=80',
+    ],
+    description: 'Corner executive suite with dedicated dining parlor, club lounge privileges, and bespoke concierge attention.',
+  },
+  {
+    _id: '671e08',
+    roomNumber: '501',
+    type: 'Presidential Suite',
+    pricePerNight: 24999,
+    capacity: 4,
+    bedType: 'Royal Master Bed',
+    floor: 5,
+    status: 'available',
+    rating: 5.0,
+    amenities: ['Private Rooftop Terrace', 'Heated Plunge Pool', 'Personal Butler 24/7', 'Private Elevator Access', 'Full Kitchenette', 'Limousine Transfer'],
+    images: [
+      'https://images.unsplash.com/photo-1578683010236-d716f9a3f461?auto=format&fit=crop&w=1000&q=80',
+      'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1000&q=80',
+      'https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=1000&q=80',
+    ],
+    description: 'The crown jewel of HotelPro. Full penthouse level with private plunge pool, panoramic skyline terrace, and 24/7 butler.',
+  },
+];
+
 const HomeView = ({ onBookRoom, onOpenAuthModal }) => {
-  const [rooms, setRooms] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [rooms, setRooms] = useState(DEFAULT_ROOMS);
+  const [loading, setLoading] = useState(false);
   const [filters, setFilters] = useState({
     type: 'All',
     status: 'All',
@@ -16,8 +165,24 @@ const HomeView = ({ onBookRoom, onOpenAuthModal }) => {
   const [photosQRRoom, setPhotosQRRoom] = useState(null);
   const [photosQRInitialTab, setPhotosQRInitialTab] = useState('photos');
 
+  const filterRoomList = (list) => {
+    return list.filter((r) => {
+      if (filters.type && filters.type !== 'All' && r.type !== filters.type) return false;
+      if (filters.status && filters.status !== 'All' && r.status !== filters.status) return false;
+      if (filters.capacity && r.capacity < Number(filters.capacity)) return false;
+      if (filters.search) {
+        const q = filters.search.toLowerCase();
+        return (
+          r.roomNumber?.toLowerCase().includes(q) ||
+          r.type?.toLowerCase().includes(q) ||
+          r.description?.toLowerCase().includes(q)
+        );
+      }
+      return true;
+    });
+  };
+
   const fetchRooms = async () => {
-    setLoading(true);
     try {
       let queryParams = [];
       if (filters.type && filters.type !== 'All') queryParams.push(`type=${encodeURIComponent(filters.type)}`);
@@ -27,13 +192,20 @@ const HomeView = ({ onBookRoom, onOpenAuthModal }) => {
 
       const queryString = queryParams.length ? `?${queryParams.join('&')}` : '';
       const res = await API.get(`/rooms${queryString}`);
-      if (res.data.success) {
-        setRooms(res.data.rooms);
+      if (res.data.success && res.data.rooms && res.data.rooms.length > 0) {
+        const enhancedRooms = res.data.rooms.map((r) => ({
+          ...r,
+          images: r.images && r.images.length > 0
+            ? r.images
+            : ['https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=1000&q=80', 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=800&q=80'],
+        }));
+        setRooms(enhancedRooms);
+      } else {
+        setRooms(filterRoomList(DEFAULT_ROOMS));
       }
     } catch (err) {
-      console.error('Error fetching rooms:', err);
-    } finally {
-      setLoading(false);
+      console.warn('Using luxury inventory fallback:', err.message);
+      setRooms(filterRoomList(DEFAULT_ROOMS));
     }
   };
 
@@ -48,16 +220,20 @@ const HomeView = ({ onBookRoom, onOpenAuthModal }) => {
       const roomIdParam = urlParams.get('room');
       const viewParam = urlParams.get('view');
       if (roomIdParam) {
-        API.get(`/rooms/${roomIdParam}`)
-          .then((res) => {
-            if (res.data.success && res.data.room) {
-              setPhotosQRRoom(res.data.room);
-              setPhotosQRInitialTab(viewParam === 'qr' ? 'qr' : 'photos');
-            }
-          })
-          .catch((err) => {
-            console.warn('Could not load room from QR URL:', err.message);
-          });
+        const found = DEFAULT_ROOMS.find((r) => r._id === roomIdParam || r.roomNumber === roomIdParam);
+        if (found) {
+          setPhotosQRRoom(found);
+          setPhotosQRInitialTab(viewParam === 'qr' ? 'qr' : 'photos');
+        } else {
+          API.get(`/rooms/${roomIdParam}`)
+            .then((res) => {
+              if (res.data.success && res.data.room) {
+                setPhotosQRRoom(res.data.room);
+                setPhotosQRInitialTab(viewParam === 'qr' ? 'qr' : 'photos');
+              }
+            })
+            .catch(() => {});
+        }
       }
     }
   }, []);
