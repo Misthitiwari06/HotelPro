@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import API from '../services/api';
 import RoomManageModal from '../components/RoomManageModal';
+import RoomPhotosQRModal from '../components/RoomPhotosQRModal';
 
 const AdminDashboardView = () => {
   const [stats, setStats] = useState(null);
@@ -10,6 +11,7 @@ const AdminDashboardView = () => {
   const [activeTab, setActiveTab] = useState('overview'); // 'overview', 'rooms', 'guests'
   const [showRoomModal, setShowRoomModal] = useState(false);
   const [editingRoom, setEditingRoom] = useState(null);
+  const [selectedRoomForQR, setSelectedRoomForQR] = useState(null);
   const [feedbackMessage, setFeedbackMessage] = useState('');
 
   const fetchDashboardData = async () => {
@@ -339,6 +341,13 @@ const AdminDashboardView = () => {
                     <td className="text-end pe-4">
                       <div className="btn-group">
                         <button
+                          className="btn btn-outline-primary btn-sm"
+                          onClick={() => setSelectedRoomForQR(room)}
+                          title="View Room Photos & QR Code"
+                        >
+                          <i className="bi bi-qr-code"></i>
+                        </button>
+                        <button
                           className="btn btn-outline-secondary btn-sm"
                           onClick={() => {
                             setEditingRoom(room);
@@ -433,6 +442,17 @@ const AdminDashboardView = () => {
         onSaveSuccess={() => {
           setFeedbackMessage('Room saved successfully.');
           fetchDashboardData();
+        }}
+      />
+
+      {/* Room Photos & QR Code Modal */}
+      <RoomPhotosQRModal
+        room={selectedRoomForQR}
+        show={Boolean(selectedRoomForQR)}
+        initialTab="qr"
+        onClose={() => setSelectedRoomForQR(null)}
+        onBookNow={() => {
+          setSelectedRoomForQR(null);
         }}
       />
     </div>

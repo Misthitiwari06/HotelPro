@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import API from '../services/api';
 import HeroBanner from '../components/HeroBanner';
 import RoomCard from '../components/RoomCard';
+import RoomPhotosQRModal from '../components/RoomPhotosQRModal';
 
 const HomeView = ({ onBookRoom, onOpenAuthModal }) => {
   const [rooms, setRooms] = useState([]);
@@ -12,7 +13,8 @@ const HomeView = ({ onBookRoom, onOpenAuthModal }) => {
     capacity: '1',
     search: '',
   });
-  const [selectedRoomDetails, setSelectedRoomDetails] = useState(null);
+  const [photosQRRoom, setPhotosQRRoom] = useState(null);
+  const [photosQRInitialTab, setPhotosQRInitialTab] = useState('photos');
 
   const fetchRooms = async () => {
     setLoading(true);
@@ -38,6 +40,27 @@ const HomeView = ({ onBookRoom, onOpenAuthModal }) => {
   useEffect(() => {
     fetchRooms();
   }, [filters.type, filters.status, filters.capacity]);
+
+  // Deep linking: When user scans QR code on phone or browser opens with ?room=<roomId>
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search);
+      const roomIdParam = urlParams.get('room');
+      const viewParam = urlParams.get('view');
+      if (roomIdParam) {
+        API.get(`/rooms/${roomIdParam}`)
+          .then((res) => {
+            if (res.data.success && res.data.room) {
+              setPhotosQRRoom(res.data.room);
+              setPhotosQRInitialTab(viewParam === 'qr' ? 'qr' : 'photos');
+            }
+          })
+          .catch((err) => {
+            console.warn('Could not load room from QR URL:', err.message);
+          });
+      }
+    }
+  }, []);
 
   const handleSearchSubmit = (e) => {
     e?.preventDefault();
@@ -161,7 +184,18 @@ const HomeView = ({ onBookRoom, onOpenAuthModal }) => {
                 <RoomCard
                   room={room}
                   onBookNow={onBookRoom}
-                  onViewDetails={setSelectedRoomDetails}
+                  onViewDetails={(r) => {
+                    setPhotosQRRoom(r);
+                    setPhotosQRInitialTab('photos');
+                  }}
+                  onOpenPhotos={(r) => {
+                    setPhotosQRRoom(r);
+                    setPhotosQRInitialTab('photos');
+                  }}
+                  onOpenQR={(r) => {
+                    setPhotosQRRoom(r);
+                    setPhotosQRInitialTab('qr');
+                  }}
                 />
               </div>
             ))}
@@ -218,74 +252,17 @@ const HomeView = ({ onBookRoom, onOpenAuthModal }) => {
         </div>
       </section>
 
-      {/* Room Detail Modal */}
-      {selectedRoomDetails && (
-        <div className="modal fade show d-block" tabIndex="-1" style={{ backgroundColor: 'rgba(15, 23, 42, 0.75)' }}>
-          <div className="modal-dialog modal-dialog-centered">
-            <div className="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
-              <div className="position-relative">
-                <img
-                  src={selectedRoomDetails.images?.[0]}
-                  alt={selectedRoomDetails.type}
-                  className="w-100"
-                  style={{ height: 260, objectFit: 'cover' }}
-                />
-                <button
-                  type="button"
-                  className="btn btn-dark btn-sm rounded-circle position-absolute top-0 end-0 m-3"
-                  onClick={() => setSelectedRoomDetails(null)}
-                >
-                  <i className="bi bi-x-lg"></i>
-                </button>
-              </div>
-
-              <div className="modal-body p-4">
-                <div className="d-flex justify-content-between align-items-start mb-2">
-                  <div>
-                    <span className="badge bg-warning text-dark fw-bold mb-1">Room #{selectedRoomDetails.roomNumber}</span>
-                    <h4 className="font-heading fw-bold mb-0">{selectedRoomDetails.type}</h4>
-                  </div>
-                  <div className="text-end">
-                    <span className="price-tag text-primary">₹{selectedRoomDetails.pricePerNight?.toLocaleString('en-IN')}</span>
-                    <div className="text-muted small">per night</div>
-                  </div>
-                </div>
-
-                <p className="text-muted small mb-3">{selectedRoomDetails.description}</p>
-
-                <h6 className="fw-bold small text-uppercase text-secondary mb-2">Room Amenities</h6>
-                <div className="d-flex flex-wrap gap-2 mb-4">
-                  {selectedRoomDetails.amenities?.map((amenity, idx) => (
-                    <span key={idx} className="badge bg-light text-dark border py-2 px-3">
-                      ✓ {amenity}
-                    </span>
-                  ))}
-                </div>
-
-                <div className="d-flex gap-2">
-                  <button
-                    className="btn btn-outline-secondary w-50 fw-semibold"
-                    onClick={() => setSelectedRoomDetails(null)}
-                  >
-                    Close
-                  </button>
-                  <button
-                    className="btn btn-primary w-50 fw-bold"
-                    onClick={() => {
-                      const roomToBook = selectedRoomDetails;
-                      setSelectedRoomDetails(null);
-                      onBookRoom(roomToBook);
-                    }}
-                    disabled={selectedRoomDetails.status !== 'available'}
-                  >
-                    {selectedRoomDetails.status === 'available' ? 'Book Room' : 'Unavailable'}
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Room Photos & QR Code Modal */}
+      <RoomPhotosQRModal
+        room={photosQRRoom}
+        show={Boolean(photosQRRoom)}
+        initialTab={photosQRInitialTab}
+        onClose={() => setPhotosQRRoom(null)}
+        onBookNow={(roomToBook) => {
+          setPhotosQRRoom(null);
+          onBookRoom(roomToBook);
+        }}
+      />
 
       {/* Footer */}
       <footer className="bg-dark text-white pt-5 pb-4 mt-5">

@@ -229,15 +229,15 @@ h1, h2, h3, .font-heading {
   font-size: 1.35rem;
 }
 
-/* Invoices (Printable) */
+/* Invoices & Room QR Tent Cards (Printable) */
 @media print {
   body * {
     visibility: hidden;
   }
-  #printable-invoice, #printable-invoice * {
+  #printable-invoice, #printable-invoice *, #printable-room-qr, #printable-room-qr * {
     visibility: visible;
   }
-  #printable-invoice {
+  #printable-invoice, #printable-room-qr {
     position: absolute;
     left: 0;
     top: 0;
@@ -253,5 +253,13 @@ h1, h2, h3, .font-heading {
   padding: 2.5rem;
   border-radius: 1rem;
   border: 1px solid #e2e8f0;
+}
+
+/* Room Photos Badge & QR Helpers */
+.room-photo-pill {
+  transition: all 0.2s ease-in-out;
+}
+.room-photo-pill:hover {
+  transform: scale(1.05);
 }
 

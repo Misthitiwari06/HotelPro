@@ -1,7 +1,8 @@
 import React from 'react';
 
-const RoomCard = ({ room, onBookNow, onViewDetails }) => {
+const RoomCard = ({ room, onBookNow, onViewDetails, onOpenQR, onOpenPhotos }) => {
   const isAvailable = room.status === 'available';
+  const photoCount = room.images?.length || 1;
 
   const getStatusBadge = (status) => {
     switch (status) {
@@ -18,6 +19,22 @@ const RoomCard = ({ room, onBookNow, onViewDetails }) => {
     }
   };
 
+  const handleOpenPhotos = () => {
+    if (onOpenPhotos) {
+      onOpenPhotos(room);
+    } else if (onViewDetails) {
+      onViewDetails(room);
+    }
+  };
+
+  const handleOpenQR = () => {
+    if (onOpenQR) {
+      onOpenQR(room);
+    } else if (onViewDetails) {
+      onViewDetails(room);
+    }
+  };
+
   return (
     <div className="card room-card h-100 shadow-sm">
       <div className="room-img-container position-relative">
@@ -25,6 +42,8 @@ const RoomCard = ({ room, onBookNow, onViewDetails }) => {
           src={room.images?.[0] || 'https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=800&q=80'}
           alt={room.type}
           loading="lazy"
+          onClick={handleOpenPhotos}
+          style={{ cursor: 'pointer' }}
         />
         <div className="room-badge">
           Room #{room.roomNumber}
@@ -38,6 +57,22 @@ const RoomCard = ({ room, onBookNow, onViewDetails }) => {
             {room.rating || 4.8}
           </span>
         </div>
+
+        {/* Room Photos Counter Pill */}
+        <button
+          type="button"
+          className="btn btn-sm p-0 position-absolute bottom-0 end-0 m-2 border-0"
+          onClick={(e) => {
+            e.stopPropagation();
+            handleOpenPhotos();
+          }}
+          title="Click to view all photos"
+        >
+          <span className="badge bg-dark bg-opacity-75 text-white py-1 px-2 rounded-pill shadow-xs d-inline-flex align-items-center gap-1">
+            <i className="bi bi-images text-warning"></i>
+            <span>{photoCount} {photoCount === 1 ? 'Photo' : 'Photos'}</span>
+          </span>
+        </button>
       </div>
 
       <div className="card-body d-flex flex-column p-4">
@@ -82,14 +117,30 @@ const RoomCard = ({ room, onBookNow, onViewDetails }) => {
           </div>
 
           <div className="d-flex gap-2">
+            {/* Room Photos QR Code Option Button */}
             <button
+              type="button"
+              className="btn btn-outline-primary btn-sm px-2 d-flex align-items-center gap-1"
+              onClick={handleOpenQR}
+              title="Scan Room Photos QR Code"
+            >
+              <i className="bi bi-qr-code-scan"></i>
+              <span className="small fw-semibold d-none d-sm-inline">Photos QR</span>
+            </button>
+
+            {/* Quick Preview / View Photos Button */}
+            <button
+              type="button"
               className="btn btn-outline-secondary btn-sm px-2"
-              onClick={() => onViewDetails(room)}
-              title="Quick preview"
+              onClick={handleOpenPhotos}
+              title="View room photos & details"
             >
               <i className="bi bi-eye"></i>
             </button>
+
+            {/* Book Stay CTA */}
             <button
+              type="button"
               className={`btn btn-sm px-3 fw-bold ${isAvailable ? 'btn-primary shadow-sm' : 'btn-secondary disabled'}`}
               onClick={() => isAvailable && onBookNow(room)}
               disabled={!isAvailable}
@@ -104,4 +155,3 @@ const RoomCard = ({ room, onBookNow, onViewDetails }) => {
 };
 
 export default RoomCard;
-

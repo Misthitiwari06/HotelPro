@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import API from '../services/api';
+import RoomPhotosQRModal from '../components/RoomPhotosQRModal';
 
 const FrontDeskView = ({ onOpenInvoice }) => {
   const [rooms, setRooms] = useState([]);
@@ -9,6 +10,7 @@ const FrontDeskView = ({ onOpenInvoice }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
   const [actionLoadingId, setActionLoadingId] = useState(null);
+  const [selectedRoomForQR, setSelectedRoomForQR] = useState(null);
   const [message, setMessage] = useState('');
 
   const loadData = async () => {
@@ -279,7 +281,7 @@ const FrontDeskView = ({ onOpenInvoice }) => {
 
                   <label className="form-label small text-secondary fw-semibold mb-1">Room Status:</label>
                   <select
-                    className="form-select form-select-sm"
+                    className="form-select form-select-sm mb-2"
                     value={room.status}
                     onChange={(e) => handleRoomStatusChange(room._id, e.target.value)}
                   >
@@ -288,12 +290,30 @@ const FrontDeskView = ({ onOpenInvoice }) => {
                     <option value="cleaning">🔵 Needs Cleaning</option>
                     <option value="maintenance">🟡 Maintenance</option>
                   </select>
+
+                  <button
+                    type="button"
+                    className="btn btn-outline-primary btn-sm w-100 d-flex align-items-center justify-content-center gap-1"
+                    onClick={() => setSelectedRoomForQR(room)}
+                  >
+                    <i className="bi bi-qr-code"></i>
+                    <span>Room Photos QR</span>
+                  </button>
                 </div>
               </div>
             </div>
           ))}
         </div>
       )}
+
+      {/* Room Photos & QR Code Modal */}
+      <RoomPhotosQRModal
+        room={selectedRoomForQR}
+        show={Boolean(selectedRoomForQR)}
+        initialTab="qr"
+        onClose={() => setSelectedRoomForQR(null)}
+        onBookNow={() => setSelectedRoomForQR(null)}
+      />
     </div>
   );
 };

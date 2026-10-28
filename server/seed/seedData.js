@@ -79,6 +79,7 @@ const seedDB = async () => {
         images: [
           'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1000&q=80',
           'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=800&q=80',
+          'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?auto=format&fit=crop&w=1000&q=80',
         ],
         description: 'Cozy and functional single room tailored for solo business travelers or short stays with ergonomic workspace.',
       },
@@ -94,6 +95,8 @@ const seedDB = async () => {
         amenities: ['High-speed Wi-Fi', 'Smart TV', 'Air Conditioning', 'Espresso Machine', 'City View'],
         images: [
           'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?auto=format&fit=crop&w=1000&q=80',
+          'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1000&q=80',
+          'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=800&q=80',
         ],
         description: 'Modern minimalist single room equipped with premium soundproofing and high-speed fiber internet.',
       },
@@ -110,6 +113,7 @@ const seedDB = async () => {
         images: [
           'https://images.unsplash.com/photo-1591088398332-8a7791972843?auto=format&fit=crop&w=1000&q=80',
           'https://images.unsplash.com/photo-1566665797739-1674de7a421a?auto=format&fit=crop&w=800&q=80',
+          'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=800&q=80',
         ],
         description: 'Spacious double room featuring private garden-facing balcony and indulgent premium bedding.',
       },
@@ -125,6 +129,8 @@ const seedDB = async () => {
         amenities: ['High-speed Wi-Fi', 'Smart TV', 'Air Conditioning', 'Mini Refrigerator', 'Safe Deposit Box', 'Robes & Slippers'],
         images: [
           'https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=1000&q=80',
+          'https://images.unsplash.com/photo-1591088398332-8a7791972843?auto=format&fit=crop&w=1000&q=80',
+          'https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&w=1000&q=80',
         ],
         description: 'Elegantly appointed double room designed with soothing acoustic tones and plush king mattress.',
       },
@@ -141,6 +147,7 @@ const seedDB = async () => {
         images: [
           'https://images.unsplash.com/photo-1578683010236-d716f9a3f461?auto=format&fit=crop&w=1000&q=80',
           'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=800&q=80',
+          'https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=1000&q=80',
         ],
         description: 'High-floor deluxe retreat offering floor-to-ceiling windows, marble bathroom, and daily artisanal breakfast.',
       },
@@ -156,6 +163,8 @@ const seedDB = async () => {
         amenities: ['City Skyline View', 'High-speed Wi-Fi', 'Complimentary Minibar', 'Soaking Tub', 'Pillow Menu', 'Turndown Service'],
         images: [
           'https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&w=1000&q=80',
+          'https://images.unsplash.com/photo-1578683010236-d716f9a3f461?auto=format&fit=crop&w=1000&q=80',
+          'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=800&q=80',
         ],
         description: 'Refined deluxe quarters featuring customized pillow selection, deep soaking tub, and skyline vistas.',
       },
@@ -172,6 +181,8 @@ const seedDB = async () => {
         images: [
           'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1000&q=80',
           'https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=800&q=80',
+          'https://images.unsplash.com/photo-1578683010236-d716f9a3f461?auto=format&fit=crop&w=1000&q=80',
+          'https://images.unsplash.com/photo-1566665797739-1674de7a421a?auto=format&fit=crop&w=800&q=80',
         ],
         description: 'Corner executive suite with dedicated dining parlor, club lounge privileges, and bespoke concierge attention.',
       },
@@ -188,6 +199,8 @@ const seedDB = async () => {
         images: [
           'https://images.unsplash.com/photo-1578683010236-d716f9a3f461?auto=format&fit=crop&w=1000&q=80',
           'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=800&q=80',
+          'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1000&q=80',
+          'https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=1000&q=80',
         ],
         description: 'The crown jewel of HotelPro. Full penthouse level with private plunge pool, panoramic skyline terrace, and 24/7 butler.',
       },

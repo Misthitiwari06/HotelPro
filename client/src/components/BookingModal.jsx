@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 import API from '../services/api';
 import { useAuth } from '../context/AuthContext';
+import RoomPhotosQRModal from './RoomPhotosQRModal';
 
 const BookingModal = ({ room, show, onClose, onBookingSuccess, onOpenAuthModal }) => {
   const { user, isAuthenticated } = useAuth();
+  const [showRoomPhotosQR, setShowRoomPhotosQR] = useState(false);
 
   const getTomorrow = () => {
     const d = new Date();
@@ -517,16 +519,35 @@ const BookingModal = ({ room, show, onClose, onBookingSuccess, onOpenAuthModal }
                   <div className="bg-light p-3 rounded-3 border h-100 d-flex flex-column justify-content-between">
                     <div>
                       <h6 className="fw-bold text-dark mb-3">Booking Summary</h6>
-                      <div className="d-flex align-items-center gap-3 mb-3">
-                        <img
-                          src={room.images?.[0]}
-                          alt={room.type}
-                          className="rounded-2"
-                          style={{ width: 80, height: 60, objectFit: 'cover' }}
-                        />
+                      <div
+                        className="d-flex align-items-center gap-3 mb-3 p-2 bg-white rounded-3 border"
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => setShowRoomPhotosQR(true)}
+                        title="Click to view all room photos & QR code"
+                      >
+                        <div className="position-relative">
+                          <img
+                            src={room.images?.[0]}
+                            alt={room.type}
+                            className="rounded-2"
+                            style={{ width: 80, height: 60, objectFit: 'cover' }}
+                          />
+                          {room.images?.length > 1 && (
+                            <span
+                              className="badge bg-dark bg-opacity-75 text-white position-absolute bottom-0 end-0 m-1"
+                              style={{ fontSize: '0.6rem' }}
+                            >
+                              <i className="bi bi-images me-1 text-warning"></i>
+                              {room.images.length}
+                            </span>
+                          )}
+                        </div>
                         <div>
                           <div className="fw-bold text-dark">{room.type}</div>
                           <div className="text-secondary small">Room #{room.roomNumber}</div>
+                          <span className="badge bg-primary-subtle text-primary border border-primary-subtle" style={{ fontSize: '0.68rem' }}>
+                            <i className="bi bi-qr-code me-1"></i> View Photos & QR
+                          </span>
                         </div>
                       </div>
 
@@ -590,6 +611,15 @@ const BookingModal = ({ room, show, onClose, onBookingSuccess, onOpenAuthModal }
           </form>
         </div>
       </div>
+
+      {/* Room Photos & QR Code Viewer from Booking Modal */}
+      <RoomPhotosQRModal
+        room={room}
+        show={showRoomPhotosQR}
+        initialTab="photos"
+        onClose={() => setShowRoomPhotosQR(false)}
+        onBookNow={() => setShowRoomPhotosQR(false)}
+      />
     </div>
   );
 };
